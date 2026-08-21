@@ -23,7 +23,7 @@
   "dependencies": {
     "@ant-design/icons": "6.3.2",
     "@ant-design/pro-components": "2.8.10",
-    "@umijs/max": "4.7.2",
+    "@umijs/max": "4.7.6",
     "@umijs/route-utils": "4.0.3",
     "antd": "5.29.3",
     "classnames": "2.5.1",
