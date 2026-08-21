@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type Auther interface {
@@ -68,7 +68,7 @@ func New(store Storer, opts ...Option) Auther {
 	}
 
 	o.keyFuncs = append(o.keyFuncs, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok || t.Method.Alg() != o.signingMethod.Alg() {
 			return nil, ErrInvalidToken
 		}
 		return o.signingKey, nil
@@ -76,7 +76,7 @@ func New(store Storer, opts ...Option) Auther {
 
 	if o.signingKey2 != nil {
 		o.keyFuncs = append(o.keyFuncs, func(t *jwt.Token) (interface{}, error) {
-			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok || t.Method.Alg() != o.signingMethod.Alg() {
 				return nil, ErrInvalidToken
 			}
 			return o.signingKey2, nil
@@ -98,10 +98,10 @@ func (a *JWTAuth) GenerateToken(ctx context.Context, subject string) (TokenInfo,
 	now := time.Now()
 	expiresAt := now.Add(time.Duration(a.opts.expired) * time.Second).Unix()
 
-	token := jwt.NewWithClaims(a.opts.signingMethod, &jwt.StandardClaims{
-		IssuedAt:  now.Unix(),
-		ExpiresAt: expiresAt,
-		NotBefore: now.Unix(),
+	token := jwt.NewWithClaims(a.opts.signingMethod, &jwt.RegisteredClaims{
+		IssuedAt:  jwt.NewNumericDate(now),
+		ExpiresAt: jwt.NewNumericDate(time.Unix(expiresAt, 0)),
+		NotBefore: jwt.NewNumericDate(now),
 		Subject:   subject,
 	})
 
@@ -118,14 +118,14 @@ func (a *JWTAuth) GenerateToken(ctx context.Context, subject string) (TokenInfo,
 	return tokenInfo, nil
 }
 
-func (a *JWTAuth) parseToken(tokenStr string) (*jwt.StandardClaims, error) {
+func (a *JWTAuth) parseToken(tokenStr string) (*jwt.RegisteredClaims, error) {
 	var (
 		token *jwt.Token
 		err   error
 	)
 
 	for _, keyFunc := range a.opts.keyFuncs {
-		token, err = jwt.ParseWithClaims(tokenStr, &jwt.StandardClaims{}, keyFunc)
+		token, err = jwt.ParseWithClaims(tokenStr, &jwt.RegisteredClaims{}, keyFunc)
 		if err != nil || token == nil || !token.Valid {
 			continue
 		}
@@ -136,7 +136,11 @@ func (a *JWTAuth) parseToken(tokenStr string) (*jwt.StandardClaims, error) {
 		return nil, ErrInvalidToken
 	}
 
-	return token.Claims.(*jwt.StandardClaims), nil
+	claims, ok := token.Claims.(*jwt.RegisteredClaims)
+	if !ok {
+		return nil, ErrInvalidToken
+	}
+	return claims, nil
 }
 
 func (a *JWTAuth) callStore(fn func(Storer) error) error {
@@ -153,7 +157,10 @@ func (a *JWTAuth) DestroyToken(ctx context.Context, tokenStr string) error {
 	}
 
 	return a.callStore(func(store Storer) error {
-		expired := time.Until(time.Unix(claims.ExpiresAt, 0))
+		if claims.ExpiresAt == nil {
+			return ErrInvalidToken
+		}
+		expired := time.Until(claims.ExpiresAt.Time)
 		return store.Set(ctx, tokenStr, expired)
 	})
 }

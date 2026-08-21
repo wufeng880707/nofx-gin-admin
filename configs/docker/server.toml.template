@@ -1,0 +1,101 @@
+[General]
+AppName = "xtrading"
+Version = "v10.1.0"
+Debug = false
+PprofAddr = ""
+DisableSwagger = false
+DisablePrintConfig = true
+MenuFile = "menu_cn.json"
+DenyOperateMenu = true
+
+[General.Security]
+Strict = true
+
+[General.HTTP]
+Addr = ":8040"
+ShutdownTimeout = 10
+ReadTimeout = 60
+WriteTimeout = 60
+IdleTimeout = 10
+
+[General.Root]
+ID = "root"
+Username = "${ADMIN_USERNAME}"
+PasswordHash = "${ADMIN_PASSWORD_HASH}"
+Name = "Administrator"
+
+[Storage.Cache]
+Type = "redis"
+Delimiter = ":"
+
+[Storage.Cache.Redis]
+Addr = "redis:6379"
+Username = ""
+Password = "${REDIS_PASSWORD}"
+DB = 1
+
+[Storage.DB]
+Debug = false
+Type = "mysql"
+DSN = "${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(mysql:3306)/${MYSQL_DATABASE}?charset=utf8mb4&parseTime=True&loc=UTC"
+MaxLifetime = 86400
+MaxIdleTime = 3600
+MaxOpenConns = 50
+MaxIdleConns = 10
+TablePrefix = ""
+AutoMigrate = true
+PrepareStmt = true
+
+[Util.Captcha]
+Length = 4
+Width = 400
+Height = 160
+CacheType = "redis"
+
+[Util.Captcha.Redis]
+Addr = "redis:6379"
+Username = ""
+Password = "${REDIS_PASSWORD}"
+DB = 1
+KeyPrefix = "captcha:"
+
+[Util.Prometheus]
+Enable = false
+
+[Dictionary]
+UserCacheExp = 4
+
+[Trading.AccountSync]
+Enabled = true
+IntervalSeconds = 300
+TimeoutSeconds = 60
+SnapshotIntervalHours = 12
+SnapshotTimeZone = "Asia/Shanghai"
+
+[Trading.UserStream]
+# Read-only private order/account events. Explicitly enable after credentials are configured.
+Enabled = false
+
+[Trading.TelegramBot]
+# Long polling works behind NAT. Keep disabled until a Telegram bot channel is configured.
+Enabled = false
+PollTimeoutSeconds = 25
+RefreshSeconds = 30
+BindingTTLMinutes = 10
+
+[Trading.Notifications]
+# Automatic signal, approval and execution-result delivery. Keep disabled until destinations are verified.
+Enabled = false
+ApprovalBaseURL = "http://127.0.0.1:8000/trading-data/approvals"
+
+[Trading.MarketStream]
+# Persist public Binance liquidation snapshots for the heatmap.
+Enabled = false
+RetentionHours = 168
+Endpoint = "wss://fstream.binance.com/ws/!forceOrder@arr"
+
+[Trading.Execution]
+# Hard safety gate. Enabling this still permits testnet accounts only.
+Enabled = false
+TestnetOnly = true
+TimeoutSeconds = 15

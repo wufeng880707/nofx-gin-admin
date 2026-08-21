@@ -39,8 +39,11 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 	config.MustLoad(workDir, strings.Split(runCfg.Configs, ",")...)
 	config.C.General.WorkDir = workDir
 	config.C.Middleware.Static.Dir = staticDir
-	config.C.Print()
 	config.C.PreLoad()
+	if err := config.C.ValidateSecurity(); err != nil {
+		return fmt.Errorf("invalid security configuration: %w", err)
+	}
+	config.C.Print()
 
 	// Initialize logger.
 	cleanLoggerFn, err := logging.InitWithConfig(ctx, &config.C.Logger, initLoggerHook)

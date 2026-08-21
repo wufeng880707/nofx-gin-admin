@@ -10,9 +10,9 @@ import (
 // Usage: go build -ldflags "-X main.VERSION=x.x.x"
 var VERSION = "v10.1.0"
 
-// @title ginadmin
+// @title XTrading API
 // @version v10.1.0
-// @description A lightweight, flexible, elegant and full-featured RBAC scaffolding based on GIN + GORM 2.0 + Casbin 2.0 + Wire DI.
+// @description XTrading management API for exchange accounts, AI models, strategies, traders, runtime observations and RBAC operations.
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
@@ -20,12 +20,14 @@ var VERSION = "v10.1.0"
 // @basePath /
 func main() {
 	app := cli.NewApp()
-	app.Name = "ginadmin"
+	app.Name = "xtrading"
 	app.Version = VERSION
-	app.Usage = "A lightweight, flexible, elegant and full-featured RBAC scaffolding based on GIN + GORM 2.0 + Casbin 2.0 + Wire DI."
+	app.Usage = "XTrading management server and trading runtime operations."
 	app.Commands = []*cli.Command{
 		cmd.StartCmd(),
 		cmd.StopCmd(),
+		cmd.ImportNOFXCmd(),
+		cmd.PasswordHashCmd(),
 		cmd.VersionCmd(VERSION),
 	}
 	err := app.Run(os.Args)

@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"encoding/json"
 	"fmt"
 	"mime"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/LyricTian/gin-admin/v10/pkg/logging"
@@ -22,6 +24,74 @@ type LoggerConfig struct {
 var DefaultLoggerConfig = LoggerConfig{
 	MaxOutputRequestBodyLen:  1024 * 1024,
 	MaxOutputResponseBodyLen: 1024 * 1024,
+}
+
+const redactedLogValue = "[REDACTED]"
+
+var sensitiveLogKeys = map[string]struct{}{
+	"access_token":        {},
+	"api_key":             {},
+	"api_key_private_key": {},
+	"authorization":       {},
+	"captcha_code":        {},
+	"chain_of_thought":    {},
+	"passphrase":          {},
+	"password":            {},
+	"private_key":         {},
+	"prompt":              {},
+	"raw_response":        {},
+	"refresh_token":       {},
+	"secret":              {},
+	"secret_key":          {},
+	"system_prompt":       {},
+	"token":               {},
+}
+
+func sanitizeLogBody(body []byte) string {
+	var value any
+	if err := json.Unmarshal(body, &value); err != nil {
+		return string(body)
+	}
+	redactSensitiveLogValues(value)
+	sanitized, err := json.Marshal(value)
+	if err != nil {
+		return "[UNAVAILABLE]"
+	}
+	return string(sanitized)
+}
+
+func redactSensitiveLogValues(value any) {
+	switch data := value.(type) {
+	case map[string]any:
+		for key, item := range data {
+			if isSensitiveLogKey(key) && shouldRedactLogValue(item) {
+				data[key] = redactedLogValue
+				continue
+			}
+			redactSensitiveLogValues(item)
+		}
+	case []any:
+		for _, item := range data {
+			redactSensitiveLogValues(item)
+		}
+	}
+}
+
+func shouldRedactLogValue(value any) bool {
+	_, isBoolean := value.(bool)
+	return !isBoolean
+}
+
+func isSensitiveLogKey(key string) bool {
+	normalized := strings.ToLower(strings.ReplaceAll(key, "-", "_"))
+	if _, ok := sensitiveLogKeys[normalized]; ok {
+		return true
+	}
+	return strings.HasSuffix(normalized, "_password") ||
+		strings.HasSuffix(normalized, "_secret") ||
+		strings.HasSuffix(normalized, "_token") ||
+		strings.HasSuffix(normalized, "_private_key") ||
+		strings.HasSuffix(normalized, "_ciphertext")
 }
 
 // Record detailed request logs for quick troubleshooting.
@@ -62,7 +132,7 @@ func LoggerWithConfig(config LoggerConfig) gin.HandlerFunc {
 			if mediaType == "application/json" {
 				if v, ok := c.Get(util.ReqBodyKey); ok {
 					if b, ok := v.([]byte); ok && len(b) <= config.MaxOutputRequestBodyLen {
-						fields = append(fields, zap.String("body", string(b)))
+						fields = append(fields, zap.String("body", sanitizeLogBody(b)))
 					}
 				}
 			}
@@ -76,7 +146,7 @@ func LoggerWithConfig(config LoggerConfig) gin.HandlerFunc {
 
 		if v, ok := c.Get(util.ResBodyKey); ok {
 			if b, ok := v.([]byte); ok && len(b) <= config.MaxOutputResponseBodyLen {
-				fields = append(fields, zap.String("res_body", string(b)))
+				fields = append(fields, zap.String("res_body", sanitizeLogBody(b)))
 			}
 		}
 

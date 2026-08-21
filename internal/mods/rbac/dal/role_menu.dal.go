@@ -30,6 +30,9 @@ func (a *RoleMenu) Query(ctx context.Context, params schema.RoleMenuQueryParam, 
 	if v := params.RoleID; len(v) > 0 {
 		db = db.Where("role_id = ?", v)
 	}
+	if v := params.MenuID; len(v) > 0 {
+		db = db.Where("menu_id = ?", v)
+	}
 
 	var list schema.RoleMenus
 	pageResult, err := util.WrapPageQuery(ctx, db, params.PaginationParam, opt.QueryOptions, &list)

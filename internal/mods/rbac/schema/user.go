@@ -68,12 +68,16 @@ func (a Users) ToIDs() []string {
 type UserForm struct {
 	Username string    `json:"username" binding:"required,max=64"`                // Username for login
 	Name     string    `json:"name" binding:"required,max=64"`                    // Name of user
-	Password string    `json:"password" binding:"max=64"`                         // Password for login (md5 hash)
+	Password string    `json:"password" binding:"omitempty,min=12,max=72"`        // Password for login
 	Phone    string    `json:"phone" binding:"max=32"`                            // Phone number of user
 	Email    string    `json:"email" binding:"max=128"`                           // Email of user
 	Remark   string    `json:"remark" binding:"max=1024"`                         // Remark of user
 	Status   string    `json:"status" binding:"required,oneof=activated freezed"` // Status of user (activated, freezed)
 	Roles    UserRoles `json:"roles" binding:"required"`                          // Roles of user
+}
+
+type ResetUserPasswordForm struct {
+	Password string `json:"password" binding:"required,min=12,max=72"`
 }
 
 // A validation function for the `UserForm` struct.

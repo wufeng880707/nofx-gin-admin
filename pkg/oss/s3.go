@@ -5,10 +5,11 @@ import (
 	"io"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
 
 type S3ClientConfig struct {
@@ -23,24 +24,23 @@ type S3ClientConfig struct {
 var _ IClient = (*S3Client)(nil)
 
 type S3Client struct {
-	config  S3ClientConfig
-	session *session.Session
-	client  *s3.S3
+	config S3ClientConfig
+	client *s3.Client
 }
 
 func NewS3Client(config S3ClientConfig) (*S3Client, error) {
-	awsConfig := aws.NewConfig()
-	awsConfig.WithRegion(config.Region)
-	awsConfig.WithCredentials(credentials.NewStaticCredentials(config.AccessKeyID, config.SecretAccessKey, ""))
-	session, err := session.NewSession(awsConfig)
+	awsConfig, err := awsconfig.LoadDefaultConfig(
+		context.Background(),
+		awsconfig.WithRegion(config.Region),
+		awsconfig.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(config.AccessKeyID, config.SecretAccessKey, "")),
+	)
 	if err != nil {
 		return nil, err
 	}
 
 	return &S3Client{
-		config:  config,
-		session: session,
-		client:  s3.New(session),
+		config: config,
+		client: s3.NewFromConfig(awsConfig),
 	}, nil
 }
 
@@ -61,25 +61,22 @@ func (c *S3Client) PutObject(ctx context.Context, bucketName, objectName string,
 		Body:               reader,
 		ContentType:        aws.String(opt.ContentType),
 		ContentDisposition: aws.String("inline"),
-		ACL:                aws.String("public-read"),
+		ACL:                types.ObjectCannedACLPublicRead,
 	}
 
 	if len(opt.UserMetadata) > 0 {
-		input.Metadata = make(map[string]*string)
-		for k, v := range opt.UserMetadata {
-			input.Metadata[k] = aws.String(v)
-		}
+		input.Metadata = opt.UserMetadata
 	}
 
-	output, err := c.client.PutObject(input)
+	output, err := c.client.PutObject(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
 	return &PutObjectResult{
 		URL:  c.config.Domain + "/" + objectName,
-		Key:  *input.Key,
-		ETag: *output.ETag,
+		Key:  aws.ToString(input.Key),
+		ETag: aws.ToString(output.ETag),
 		Size: objectSize,
 	}, nil
 }
@@ -95,7 +92,7 @@ func (c *S3Client) GetObject(ctx context.Context, bucketName, objectName string)
 		Key:    aws.String(objectName),
 	}
 
-	output, err := c.client.GetObject(input)
+	output, err := c.client.GetObject(ctx, input)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +111,7 @@ func (c *S3Client) RemoveObject(ctx context.Context, bucketName, objectName stri
 		Key:    aws.String(objectName),
 	}
 
-	_, err := c.client.DeleteObject(input)
+	_, err := c.client.DeleteObject(ctx, input)
 	return err
 }
 
@@ -130,7 +127,7 @@ func (c *S3Client) RemoveObjectByURL(ctx context.Context, urlStr string) error {
 		Key:    aws.String(objectName),
 	}
 
-	_, err := c.client.DeleteObject(input)
+	_, err := c.client.DeleteObject(ctx, input)
 	return err
 }
 
@@ -155,25 +152,22 @@ func (c *S3Client) StatObject(ctx context.Context, bucketName, objectName string
 		Key:    aws.String(objectName),
 	}
 
-	output, err := c.client.HeadObject(input)
+	output, err := c.client.HeadObject(ctx, input)
 	if err != nil {
 		return nil, err
 	}
 
 	var metadata map[string]string
 	if output.Metadata != nil {
-		metadata = make(map[string]string)
-		for k, v := range output.Metadata {
-			metadata[k] = *v
-		}
+		metadata = output.Metadata
 	}
 
 	return &ObjectStat{
 		Key:          objectName,
-		ETag:         *output.ETag,
-		LastModified: *output.LastModified,
-		Size:         *output.ContentLength,
-		ContentType:  *output.ContentType,
+		ETag:         aws.ToString(output.ETag),
+		LastModified: aws.ToTime(output.LastModified),
+		Size:         aws.ToInt64(output.ContentLength),
+		ContentType:  aws.ToString(output.ContentType),
 		UserMetadata: metadata,
 	}, nil
 }

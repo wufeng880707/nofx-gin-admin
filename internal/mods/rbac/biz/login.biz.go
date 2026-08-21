@@ -2,6 +2,8 @@ package biz
 
 import (
 	"context"
+	"crypto/md5" //nolint:gosec // one-time compatibility for legacy bcrypt(MD5(password)) records
+	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -150,7 +152,8 @@ func (a *Login) Login(ctx context.Context, formItem *schema.LoginForm) (*schema.
 
 	// login by root
 	if formItem.Username == config.C.General.Root.Username {
-		if formItem.Password != config.C.General.Root.Password {
+		if config.C.General.Root.PasswordHash == "" ||
+			hash.CompareHashAndPassword(config.C.General.Root.PasswordHash, formItem.Password) != nil {
 			return nil, errors.BadRequest(config.ErrInvalidUsernameOrPassword, "Incorrect username or password")
 		}
 
@@ -175,8 +178,19 @@ func (a *Login) Login(ctx context.Context, formItem *schema.LoginForm) (*schema.
 	}
 
 	// check password
-	if err := hash.CompareHashAndPassword(user.Password, formItem.Password); err != nil {
+	legacyPassword, err := compareStoredPassword(user.Password, formItem.Password)
+	if err != nil {
 		return nil, errors.BadRequest(config.ErrInvalidUsernameOrPassword, "Incorrect username or password")
+	}
+	if legacyPassword {
+		upgradedHash, err := hash.GeneratePassword(formItem.Password)
+		if err != nil {
+			return nil, err
+		}
+		if err := a.UserDAL.UpdatePasswordByID(ctx, user.ID, upgradedHash); err != nil {
+			return nil, err
+		}
+		logging.Context(ctx).Info("Upgraded legacy password hash", zap.String("user_id", user.ID))
 	}
 
 	userID := user.ID
@@ -295,7 +309,7 @@ func (a *Login) UpdatePassword(ctx context.Context, updateItem *schema.UpdateLog
 	}
 
 	// check old password
-	if err := hash.CompareHashAndPassword(user.Password, updateItem.OldPassword); err != nil {
+	if _, err := compareStoredPassword(user.Password, updateItem.OldPassword); err != nil {
 		return errors.BadRequest("", "Incorrect old password")
 	}
 
@@ -305,6 +319,20 @@ func (a *Login) UpdatePassword(ctx context.Context, updateItem *schema.UpdateLog
 		return err
 	}
 	return a.UserDAL.UpdatePasswordByID(ctx, userID, newPassword)
+}
+
+// compareStoredPassword accepts the current bcrypt(password) format and
+// transparently upgrades users created by the former bcrypt(MD5(password))
+// browser protocol after their next successful login.
+func compareStoredPassword(storedHash, password string) (legacy bool, err error) {
+	if err := hash.CompareHashAndPassword(storedHash, password); err == nil {
+		return false, nil
+	}
+	legacyDigest := fmt.Sprintf("%x", md5.Sum([]byte(password))) //nolint:gosec
+	if err := hash.CompareHashAndPassword(storedHash, legacyDigest); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // Query menus based on user permissions

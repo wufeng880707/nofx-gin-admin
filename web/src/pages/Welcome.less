@@ -1,0 +1,651 @@
+.page {
+  --dashboard-positive: #0b9b6d;
+  --dashboard-negative: #d84a5b;
+}
+
+.accountSelect {
+  width: min(320px, 38vw);
+  min-width: 260px;
+}
+
+.alert {
+  margin-bottom: 12px;
+}
+
+.metricCard,
+.panelCard,
+.performanceCard,
+.positionsCard {
+  border-radius: 4px;
+}
+
+.metricCard {
+  height: 100%;
+}
+
+.metricCard :global(.ant-card-body) {
+  min-height: 142px;
+  padding: 18px;
+}
+
+.metricHeader {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 28px;
+}
+
+.metricIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--ant-color-primary);
+  font-size: 15px;
+  background: var(--ant-color-primary-bg);
+  border: 1px solid var(--ant-color-primary-border);
+  border-radius: 4px;
+}
+
+.metricValue {
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+  color: var(--ant-color-text);
+  font-weight: 650;
+  font-size: 24px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricValue small,
+.performanceMetric strong small,
+.equityValue small {
+  margin-left: 5px;
+  color: var(--ant-color-text-secondary);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.metricHint {
+  display: block;
+  margin-top: 9px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.positive {
+  color: var(--dashboard-positive) !important;
+}
+
+.negative {
+  color: var(--dashboard-negative) !important;
+}
+
+.sectionRow,
+.performanceCard,
+.runtimeCard,
+.positionsCard {
+  margin-top: 12px;
+}
+
+.panelCard {
+  height: 100%;
+}
+
+.panelCard :global(.ant-card-head-title) {
+  min-width: 112px;
+}
+
+.panelCard :global(.ant-card-body) {
+  min-height: 438px;
+  padding: 16px 18px 18px;
+}
+
+.equityPanel,
+.marketPanel {
+  min-height: 400px;
+}
+
+.equityHeader,
+.marketSummary,
+.marketToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.equityValue {
+  color: var(--ant-color-text);
+  font-weight: 650;
+  font-size: 26px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+.equityCanvas,
+.marketCanvas {
+  width: 100%;
+  min-height: 268px;
+  margin-top: 10px;
+}
+
+.equityFacts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.equityFacts > div {
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--ant-color-fill-quaternary);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 4px;
+}
+
+.equityFacts span,
+.equityFacts strong {
+  display: block;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.55;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.equityFacts strong {
+  color: var(--ant-color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.marketSummary {
+  align-items: flex-start;
+  padding-bottom: 12px;
+}
+
+.marketSymbol {
+  font-size: 15px;
+}
+
+.marketPriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 5px;
+}
+
+.marketPrice {
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.marketStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(90px, 1fr));
+  gap: 22px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.marketStats span,
+.marketStats small {
+  display: block;
+}
+
+.marketStats small {
+  margin-bottom: 4px;
+  color: var(--ant-color-text-tertiary);
+  font-size: 10px;
+}
+
+.marketToolbar {
+  justify-content: flex-start;
+  min-height: 38px;
+  padding: 6px 8px;
+  background: var(--ant-color-fill-quaternary);
+  border-top: 1px solid var(--ant-color-border-secondary);
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+}
+
+.symbolSelect {
+  min-width: 148px;
+}
+
+.intervalControl {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.intervalControl button {
+  min-width: 32px;
+  height: 24px;
+  padding: 0 6px;
+  color: var(--ant-color-text-secondary);
+  font-size: 11px;
+  background: transparent;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.intervalControl button:hover,
+.intervalControl button[data-active='true'] {
+  color: var(--ant-color-primary);
+  background: var(--ant-color-primary-bg);
+}
+
+.marketEmpty {
+  padding-top: 76px;
+}
+
+.marketIntelligence {
+  display: grid;
+  grid-template-columns: 1.15fr 1.5fr 1.2fr 0.8fr;
+  gap: 1px;
+  margin-top: 8px;
+  overflow: hidden;
+  background: var(--ant-color-border-secondary);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 4px;
+}
+
+.marketSignals,
+.marketBook,
+.marketDerivatives,
+.marketRisk {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 52px;
+  gap: 12px;
+  padding: 7px 10px;
+  background: var(--ant-color-bg-container);
+}
+
+.marketSignals > span,
+.marketBook > span,
+.marketDerivatives > span,
+.marketRisk > span {
+  min-width: 0;
+}
+
+.marketSignals small,
+.marketSignals strong,
+.marketBook small,
+.marketBook strong,
+.marketDerivatives small,
+.marketDerivatives strong,
+.marketRisk small,
+.marketRisk strong {
+  display: block;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marketSignals small,
+.marketBook small,
+.marketDerivatives small,
+.marketRisk small,
+.marketIntelligenceTitle {
+  color: var(--ant-color-text-tertiary);
+}
+
+.marketIntelligenceTitle {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.marketSignals [data-tone='up'] strong {
+  color: #0b9b6d;
+}
+
+.marketSignals [data-tone='down'] strong {
+  color: #d84a5b;
+}
+
+.marketSignals [data-tone='warn'] strong {
+  color: var(--ant-color-warning);
+}
+
+.decisionList {
+  margin: -6px -10px;
+}
+
+.decisionList :global(.ant-collapse-item) {
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+}
+
+.decisionList :global(.ant-collapse-item:last-child) {
+  border-bottom: 0;
+}
+
+.decisionList :global(.ant-collapse-header) {
+  align-items: center !important;
+  padding: 13px 10px !important;
+}
+
+.decisionList :global(.ant-collapse-content-box) {
+  padding: 0 10px 14px 34px !important;
+}
+
+.decisionLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.decisionMeta {
+  margin-top: 3px;
+  color: var(--ant-color-text-tertiary);
+  font-size: 11px;
+}
+
+.decisionDetail {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  background: var(--ant-color-fill-quaternary);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 4px;
+}
+
+.decisionDetail section > span:first-child {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.tagList {
+  min-height: 22px;
+}
+
+.executionLog {
+  max-height: 92px;
+  overflow: auto;
+  color: var(--ant-color-text-secondary);
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.performanceCard :global(.ant-card-body) {
+  padding: 18px;
+}
+
+.performanceGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+}
+
+.performanceMetric {
+  min-width: 0;
+  padding: 4px 16px;
+  border-right: 1px solid var(--ant-color-border-secondary);
+}
+
+.performanceMetric:first-child {
+  padding-left: 0;
+}
+
+.performanceMetric:last-child {
+  border-right: 0;
+}
+
+.performanceMetric > span,
+.performanceMetric strong {
+  display: block;
+}
+
+.performanceMetric strong {
+  margin-top: 7px;
+  overflow-wrap: anywhere;
+  color: var(--ant-color-text);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.performanceFootnote {
+  margin-top: 16px;
+  padding-top: 12px;
+  color: var(--ant-color-text-secondary);
+  font-size: 12px;
+  border-top: 1px solid var(--ant-color-border-secondary);
+}
+
+.runtimeCard :global(.ant-card-body) {
+  padding: 0 18px 10px;
+}
+
+.runtimeList {
+  display: grid;
+}
+
+.runtimeItem {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(720px, 1.8fr);
+  gap: 20px;
+  align-items: center;
+  min-height: 78px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+}
+
+.runtimeItem:last-child {
+  border-bottom: 0;
+}
+
+.runtimeIdentity {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.runtimeIdentity > span:last-child {
+  font-size: 12px;
+}
+
+.runtimeFacts {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(84px, 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.decisionPayload {
+  max-height: 240px;
+  margin: 8px 0 0;
+  padding: 12px;
+  overflow: auto;
+  color: var(--ant-color-text);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--ant-color-fill-quaternary);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 6px;
+}
+
+.runtimeFacts span,
+.runtimeFacts small,
+.runtimeFacts strong {
+  display: block;
+  min-width: 0;
+}
+
+.runtimeFacts small {
+  margin-bottom: 4px;
+  color: var(--ant-color-text-secondary);
+  font-size: 11px;
+}
+
+.runtimeFacts strong {
+  overflow: hidden;
+  color: var(--ant-color-text);
+  font-size: 13px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.positionsCard :global(.ant-card-body) {
+  padding: 0 18px 18px;
+}
+
+.positionsCard :global(.ant-table) {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1199px) {
+  .marketIntelligence {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .performanceGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 18px;
+  }
+
+  .performanceMetric:nth-child(3) {
+    border-right: 0;
+  }
+
+  .runtimeItem {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .runtimeFacts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .marketIntelligence {
+    grid-template-columns: 1fr;
+  }
+
+  .accountSelect {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .panelCard :global(.ant-card-head) {
+    align-items: flex-start;
+    min-height: 74px;
+    padding-top: 10px;
+  }
+
+  .panelCard :global(.ant-card-extra) {
+    max-width: 70%;
+  }
+
+  .equityFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .marketSummary {
+    display: block;
+  }
+
+  .marketStats {
+    margin-top: 12px;
+  }
+
+  .marketToolbar {
+    flex-wrap: wrap;
+  }
+
+  .intervalControl {
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .metricCard :global(.ant-card-body) {
+    min-height: 126px;
+    padding: 14px;
+  }
+
+  .metricValue {
+    font-size: 21px;
+  }
+
+  .panelCard :global(.ant-card-body) {
+    min-height: 420px;
+    padding: 14px;
+  }
+
+  .equityHeader {
+    align-items: flex-start;
+  }
+
+  .equityValue,
+  .marketPrice {
+    font-size: 21px;
+  }
+
+  .marketStats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .marketStats span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .symbolSelect {
+    min-width: 130px;
+  }
+
+  .decisionLabel {
+    align-items: flex-start;
+  }
+
+  .decisionLabel > span:last-child {
+    display: none;
+  }
+
+  .performanceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+
+  .runtimeFacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .performanceMetric,
+  .performanceMetric:first-child {
+    padding: 0 10px;
+  }
+
+  .performanceMetric:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .performanceMetric:nth-child(3) {
+    border-right: 1px solid var(--ant-color-border-secondary);
+  }
+}

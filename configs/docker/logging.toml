@@ -1,0 +1,7 @@
+[Logger]
+Debug = true
+Level = "debug"
+CallerSkip = 1
+
+[Logger.File]
+Enable = false

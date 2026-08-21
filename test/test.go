@@ -22,6 +22,7 @@ var (
 
 func init() {
 	config.MustLoad("")
+	config.C.Storage.DB.AutoMigrate = true
 
 	_ = os.RemoveAll(config.C.Storage.DB.DSN)
 	ctx := context.Background()

@@ -1,13 +1,15 @@
 [General]
-AppName = "ginadmin"
+AppName = "xtrading"
 Version = "v10.1.0"
 Debug = true
 PprofAddr = "" # Pprof monitor address, "localhost:6060"
 DisableSwagger = false
-DisablePrintConfig = false
-DefaultLoginPwd = "6351623c8cef86fefabfa7da046fc619" # MD5("abc-123")
+DisablePrintConfig = true
 MenuFile = "menu.json" # Or use "menu_cn.json"
 DenyOperateMenu = true
+
+[General.Security]
+Strict = false
 
 [General.HTTP]
 Addr = ":8040"
@@ -21,7 +23,8 @@ KeyFile = ""
 [General.Root] # Super Administrator Account
 ID = "root"
 Username = "admin"
-Password = "6351623c8cef86fefabfa7da046fc619" # MD5("abc-123")
+# Local development only. Production uses a one-time generated password.
+PasswordHash = "$2a$10$su/QsY9c6O3H91I24m4iROIczoetjArsAR0zF3wcHUvP5sTksilM6"
 Name = "Admin"
 
 [Storage]
@@ -84,3 +87,39 @@ DefaultCollect = true
 
 [Dictionary]
 UserCacheExp = 4 # hours
+
+[Trading.AccountSync]
+Enabled = true
+IntervalSeconds = 300
+TimeoutSeconds = 60
+SnapshotIntervalHours = 12
+SnapshotTimeZone = "Asia/Shanghai"
+
+[Trading.UserStream]
+# Read-only private order/account events. Explicitly enable after credentials are configured.
+Enabled = false
+
+[Trading.TelegramBot]
+# Local deployments use long polling and do not require a public HTTPS webhook.
+# Enabling this permits outbound requests and user-triggered replies to Telegram.
+Enabled = false
+PollTimeoutSeconds = 25
+RefreshSeconds = 30
+BindingTTLMinutes = 10
+
+[Trading.Notifications]
+# Automatic signal, approval and execution-result delivery. Manual channel tests are independent.
+Enabled = false
+ApprovalBaseURL = "http://127.0.0.1:8000/trading-data/approvals"
+
+[Trading.MarketStream]
+# Public Binance liquidation stream. Data starts accumulating after enablement.
+Enabled = false
+RetentionHours = 168
+Endpoint = "wss://fstream.binance.com/ws/!forceOrder@arr"
+
+[Trading.Execution]
+# Hard safety gate. Enabling this still permits testnet accounts only.
+Enabled = false
+TestnetOnly = true
+TimeoutSeconds = 15

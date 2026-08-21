@@ -26,6 +26,7 @@ tmp
 /test/data
 /internal/swagger/v3/.openapi-generator
 /internal/swagger/v3/.openapi-generator-ignore
+/docker/.env
 
 # IDE configs
 .idea

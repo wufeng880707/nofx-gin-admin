@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/LyricTian/gin-admin/v10/internal/mods/rbac/schema"
-	"github.com/LyricTian/gin-admin/v10/pkg/crypto/hash"
 	"github.com/LyricTian/gin-admin/v10/pkg/util"
 	"github.com/stretchr/testify/assert"
 )
@@ -63,7 +62,7 @@ func TestUser(t *testing.T) {
 	userFormItem := schema.UserForm{
 		Username: "test",
 		Name:     "Test",
-		Password: hash.MD5String("test"),
+		Password: "test-password-123",
 		Phone:    "0720",
 		Email:    "test@gmail.com",
 		Remark:   "test user",

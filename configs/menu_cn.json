@@ -1,11 +1,60 @@
 [
     {
-        "code": "home",
-        "name": "首页",
+        "code": "dashboard",
+        "name": "Dashboard",
         "sequence": 90,
         "type": "page",
-        "path": "/home",
-        "status": "enabled"
+        "path": "/dashboard",
+        "status": "enabled",
+        "children": [
+            {
+                "code": "workplace",
+                "name": "工作台",
+                "sequence": 90,
+                "type": "page",
+                "path": "/dashboard/workplace",
+                "status": "enabled",
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/exchanges"},
+                    {"method": "GET", "path": "/api/v1/trading/models"},
+                    {"method": "GET", "path": "/api/v1/trading/strategies"},
+                    {"method": "GET", "path": "/api/v1/trading/traders"},
+                    {"method": "GET", "path": "/api/v1/trading/dashboard/overview"},
+                    {"method": "GET", "path": "/api/v1/trading/analytics/equity-curve"},
+                    {"method": "GET", "path": "/api/v1/trading/analytics/performance"},
+                    {"method": "GET", "path": "/api/v1/trading/positions"},
+                    {"method": "GET", "path": "/api/v1/trading/decisions"},
+                    {"method": "GET", "path": "/api/v1/trading/decisions/:id"},
+                    {"method": "POST", "path": "/api/v1/trading/assistant/tasks"}
+                ]
+            }
+        ]
+    },
+    {
+        "code": "market",
+        "name": "行情中心",
+        "sequence": 85,
+        "type": "page",
+        "path": "/market",
+        "status": "enabled",
+        "children": [
+            {
+                "code": "chart",
+                "name": "K 线行情",
+                "sequence": 90,
+                "type": "page",
+                "path": "/market/chart",
+                "status": "enabled",
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/market/instruments"},
+                    {"method": "GET", "path": "/api/v1/market/ticker"},
+                    {"method": "GET", "path": "/api/v1/market/klines"},
+                    {"method": "GET", "path": "/api/v1/market/context"},
+                    {"method": "GET", "path": "/api/v1/market/provider-capabilities"},
+                    {"method": "GET", "path": "/api/v1/market/liquidations/heatmap"}
+                ]
+            }
+        ]
     },
     {
         "code": "system",
@@ -234,7 +283,478 @@
                         "path": "/api/v1/loggers"
                     }
                 ]
+            },
+            {
+                "code": "scheduled-task",
+                "name": "定时任务",
+                "sequence": 20,
+                "type": "page",
+                "path": "/system/scheduled-task",
+                "status": "enabled",
+                "children": [
+                    {"code": "add", "name": "新增", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/scheduled-tasks"}
+                    ]},
+                    {"code": "edit", "name": "编辑", "type": "button", "status": "enabled", "resources": [
+                        {"method": "PUT", "path": "/api/v1/trading/scheduled-tasks/{id}"}
+                    ]},
+                    {"code": "delete", "name": "删除", "type": "button", "status": "enabled", "resources": [
+                        {"method": "DELETE", "path": "/api/v1/trading/scheduled-tasks/{id}"}
+                    ]},
+                    {"code": "trigger", "name": "立即执行", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/scheduled-tasks/{id}/trigger"}
+                    ]},
+                    {"code": "pause", "name": "暂停", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/scheduled-tasks/{id}/pause"}
+                    ]},
+                    {"code": "resume", "name": "恢复", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/scheduled-tasks/{id}/resume"}
+                    ]},
+                    {"code": "disable", "name": "停用", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/scheduled-tasks/{id}/disable"}
+                    ]},
+                    {"code": "history", "name": "执行历史", "type": "button", "status": "enabled"}
+                ],
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/scheduled-tasks"},
+                    {"method": "GET", "path": "/api/v1/trading/scheduled-task-runs"},
+                    {"method": "GET", "path": "/api/v1/trading/scheduled-task-audits"}
+                ]
             }
         ]
-    }
+    },
+    {
+        "code": "trading",
+        "name": "交易中心",
+        "sequence": 80,
+        "type": "page",
+        "path": "/trading",
+        "status": "enabled",
+        "children": [
+            {
+                "code": "configs",
+                "name": "交易配置",
+                "sequence": 90,
+                "type": "page",
+                "path": "/trading/configs",
+                "status": "enabled",
+                "children": [
+                    {
+                        "code": "add",
+                        "name": "新增",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/exchanges"},
+                            {"method": "POST", "path": "/api/v1/trading/models"},
+                            {"method": "POST", "path": "/api/v1/trading/strategies"}
+                        ]
+                    },
+                    {
+                        "code": "edit",
+                        "name": "编辑",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "GET", "path": "/api/v1/trading/exchanges/{id}"},
+                            {"method": "PUT", "path": "/api/v1/trading/exchanges/{id}"},
+                            {"method": "GET", "path": "/api/v1/trading/models/{id}"},
+                            {"method": "PUT", "path": "/api/v1/trading/models/{id}"},
+                            {"method": "GET", "path": "/api/v1/trading/strategies/{id}"},
+                            {"method": "PUT", "path": "/api/v1/trading/strategies/{id}"}
+                        ]
+                    },
+                    {
+                        "code": "delete",
+                        "name": "删除",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "DELETE", "path": "/api/v1/trading/exchanges/{id}"},
+                            {"method": "DELETE", "path": "/api/v1/trading/models/{id}"},
+                            {"method": "DELETE", "path": "/api/v1/trading/strategies/{id}"}
+                        ]
+                    },
+                    {
+                        "code": "test",
+                        "name": "连接测试",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/exchanges/{id}/test"},
+                            {"method": "POST", "path": "/api/v1/trading/models/{id}/test"}
+                        ]
+                    },
+                    {
+                        "code": "sync-data",
+                        "name": "同步账户数据",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/exchanges/{id}/sync"}
+                        ]
+                    },
+                    {
+                        "code": "history-backfill",
+                        "name": "历史订单回填",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/exchanges/{id}/history/backfill"}
+                        ]
+                    }
+                ],
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/exchanges"},
+                    {"method": "GET", "path": "/api/v1/trading/models"},
+                    {"method": "GET", "path": "/api/v1/trading/strategies"}
+                ]
+            },
+            {
+                "code": "strategies",
+                "name": "策略工作室",
+                "sequence": 88,
+                "type": "page",
+                "path": "/trading/strategies",
+                "status": "enabled",
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/strategies"},
+                    {"method": "GET", "path": "/api/v1/trading/strategies/{id}"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies"},
+                    {"method": "PUT", "path": "/api/v1/trading/strategies/{id}"},
+                    {"method": "DELETE", "path": "/api/v1/trading/strategies/{id}"},
+                    {"method": "GET", "path": "/api/v1/trading/strategies/default-config"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/preview"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/estimate-tokens"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/test"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/{id}/activate"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/{id}/duplicate"},
+                    {"method": "GET", "path": "/api/v1/trading/strategies/{id}/versions"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/{id}/publish"},
+                    {"method": "POST", "path": "/api/v1/trading/strategies/{id}/rollback"},
+                    {"method": "GET", "path": "/api/v1/trading/models"}
+                ]
+            },
+            {
+                "code": "spot-strategy",
+                "name": "现货仓位策略",
+                "sequence": 87,
+                "type": "page",
+                "path": "/trading/spot-strategy",
+                "status": "enabled",
+                "children": [
+                    {"code": "run-backtest", "name": "运行回测", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/backtests"}
+                    ]},
+                    {"code": "cancel-backtest", "name": "取消回测", "type": "button", "status": "enabled", "resources": [
+                        {"method": "POST", "path": "/api/v1/trading/backtests/{id}/cancel"}
+                    ]}
+                ],
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/strategies/default-config"},
+                    {"method": "GET", "path": "/api/v1/trading/backtests"},
+                    {"method": "GET", "path": "/api/v1/trading/backtests/{id}"},
+                    {"method": "GET", "path": "/api/v1/trading/backtests/{id}/result"},
+                    {"method": "GET", "path": "/api/v1/trading/spot-strategy/lots"},
+                    {"method": "GET", "path": "/api/v1/trading/spot-strategy/cycles/{cycleID}/events"}
+                ]
+            },
+            {
+                "code": "notifications",
+                "name": "通知渠道",
+                "sequence": 85,
+                "type": "page",
+                "path": "/trading/notifications",
+                "status": "enabled",
+                "children": [
+                    {
+                        "code": "add",
+                        "name": "新增",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/notification-channels"}
+                        ]
+                    },
+                    {
+                        "code": "edit",
+                        "name": "编辑",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "GET", "path": "/api/v1/trading/notification-channels/{id}"},
+                            {"method": "PUT", "path": "/api/v1/trading/notification-channels/{id}"}
+                        ]
+                    },
+                    {
+                        "code": "delete",
+                        "name": "删除",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "DELETE", "path": "/api/v1/trading/notification-channels/{id}"}
+                        ]
+                    },
+                    {
+                        "code": "test",
+                        "name": "发送测试消息",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/notification-channels/{id}/test"}
+                        ]
+                    },
+                    {
+                        "code": "bind",
+                        "name": "绑定 Telegram 会话",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "POST", "path": "/api/v1/trading/notification-channels/{id}/telegram/binding-code"},
+                            {"method": "GET", "path": "/api/v1/trading/notification-channels/{id}/telegram/session"},
+                            {"method": "DELETE", "path": "/api/v1/trading/notification-channels/{id}/telegram/session"}
+                        ]
+                    }
+                ],
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/notification-channels"}
+                ]
+            },
+            {
+                "code": "traders",
+                "name": "Trader 管理",
+                "sequence": 80,
+                "type": "page",
+                "path": "/trading/traders",
+                "status": "enabled",
+                "children": [
+                    {
+                        "code": "add",
+                        "name": "新增",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [{"method": "POST", "path": "/api/v1/trading/traders"}]
+                    },
+                    {
+                        "code": "edit",
+                        "name": "编辑",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "GET", "path": "/api/v1/trading/traders/{id}"},
+                            {"method": "PUT", "path": "/api/v1/trading/traders/{id}"}
+                        ]
+                    },
+                    {
+                        "code": "delete",
+                        "name": "删除",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [{"method": "DELETE", "path": "/api/v1/trading/traders/{id}"}]
+                    },
+                    {
+                        "code": "start",
+                        "name": "启动",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [{"method": "POST", "path": "/api/v1/trading/traders/{id}/start"}]
+                    },
+                    {
+                        "code": "stop",
+                        "name": "停止",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [{"method": "POST", "path": "/api/v1/trading/traders/{id}/stop"}]
+                    },
+                    {
+                        "code": "sync",
+                        "name": "立即同步",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [{"method": "POST", "path": "/api/v1/trading/traders/{id}/sync"}]
+                    },
+                    {
+                        "code": "competition",
+                        "name": "竞赛参加设置",
+                        "type": "button",
+                        "status": "enabled",
+                        "resources": [
+                            {"method": "GET", "path": "/api/v1/trading/traders/{id}/competition"},
+                            {"method": "PUT", "path": "/api/v1/trading/traders/{id}/competition"}
+                        ]
+                    }
+                ],
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/traders"},
+                    {"method": "GET", "path": "/api/v1/trading/notification-channels"},
+                    {"method": "GET", "path": "/api/v1/trading/account-snapshots"},
+                    {"method": "GET", "path": "/api/v1/trading/positions"},
+                    {"method": "GET", "path": "/api/v1/trading/decisions"},
+                    {"method": "GET", "path": "/api/v1/trading/decisions/:id"}
+                ]
+            },
+            {
+                "code": "decisions",
+                "name": "决策记录",
+                "sequence": 50,
+                "type": "page",
+                "path": "/trading/decisions",
+                "status": "enabled",
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/decisions"},
+                    {"method": "GET", "path": "/api/v1/trading/decisions/:id"}
+                ]
+            },
+            {
+                "code": "approvals",
+                "name": "交易审批",
+                "sequence": 55,
+                "type": "page",
+                "path": "/trading/approvals",
+                "status": "enabled",
+                "children": [
+                    {"code": "approve", "name": "批准", "type": "button", "status": "enabled", "resources": [{"method": "POST", "path": "/api/v1/trading/trade-approvals/{id}/approve"}]},
+                    {"code": "reject", "name": "拒绝", "type": "button", "status": "enabled", "resources": [{"method": "POST", "path": "/api/v1/trading/trade-approvals/{id}/reject"}]}
+                ],
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/trade-approvals"},
+                    {"method": "GET", "path": "/api/v1/trading/trade-approvals/{id}/events"}
+                ]
+            },
+            {
+                "code": "execution",
+                "name": "交易执行",
+                "sequence": 60,
+                "type": "page",
+                "path": "/trading/execution",
+                "status": "enabled",
+                "resources": [
+                    {"method": "GET", "path": "/api/v1/trading/execution/safety"},
+                    {"method": "GET", "path": "/api/v1/trading/trade-commands"},
+                    {"method": "GET", "path": "/api/v1/trading/trade-commands/{id}/events"}
+                ]
+            }
+        ]
+    },
+	{
+		"code": "trading-data",
+		"name": "交易数据",
+		"sequence": 70,
+		"type": "page",
+		"path": "/trading-data",
+		"status": "enabled",
+		"children": [
+			{
+				"code": "history-sync",
+				"name": "同步完整性",
+				"sequence": 90,
+				"type": "page",
+				"path": "/trading-data/history-sync",
+				"status": "enabled",
+				"children": [
+					{
+						"code": "sync-data",
+						"name": "立即同步",
+						"type": "button",
+						"status": "enabled",
+						"resources": [{"method": "POST", "path": "/api/v1/trading/exchanges/{id}/sync"}]
+					},
+					{
+						"code": "history-symbols",
+						"name": "历史交易对",
+						"type": "button",
+						"status": "enabled",
+						"resources": [{"method": "PUT", "path": "/api/v1/trading/exchanges/{id}/history/symbols"}]
+					},
+					{
+						"code": "history-backfill",
+						"name": "区间回填",
+						"type": "button",
+						"status": "enabled",
+						"resources": [{"method": "POST", "path": "/api/v1/trading/exchanges/{id}/history/backfill"}]
+					}
+				],
+				"resources": [
+					{"method": "GET", "path": "/api/v1/trading/history-status"},
+					{"method": "GET", "path": "/api/v1/trading/user-stream/states"},
+					{"method": "GET", "path": "/api/v1/trading/user-stream/events"}
+				]
+			},
+			{
+				"code": "analytics",
+				"name": "交易分析",
+				"sequence": 80,
+				"type": "page",
+				"path": "/trading-data/analytics",
+				"status": "enabled",
+				"resources": [
+					{"method": "GET", "path": "/api/v1/trading/exchanges"},
+					{"method": "GET", "path": "/api/v1/trading/analytics/performance"},
+					{"method": "GET", "path": "/api/v1/trading/analytics/closed-trades"}
+				]
+			},
+			{
+				"code": "assets",
+				"name": "资产总览",
+				"sequence": 70,
+				"type": "page",
+				"path": "/trading-data/assets",
+				"status": "enabled",
+				"resources": [
+					{"method": "GET", "path": "/api/v1/trading/asset-summary"},
+					{"method": "GET", "path": "/api/v1/trading/asset-balances"}
+				]
+			},
+			{
+				"code": "snapshots",
+				"name": "账户快照",
+				"sequence": 60,
+				"type": "page",
+				"path": "/trading-data/snapshots",
+				"status": "enabled",
+				"resources": [{"method": "GET", "path": "/api/v1/trading/account-snapshots"}]
+			},
+			{
+				"code": "positions",
+				"name": "仓位记录",
+				"sequence": 50,
+				"type": "page",
+				"path": "/trading-data/positions",
+				"status": "enabled",
+				"children": [
+					{"code": "close", "name": "平仓", "type": "button", "status": "enabled", "resources": [{"method": "POST", "path": "/api/v1/trading/trade-commands"}]},
+					{"code": "close-all", "name": "全部平仓", "type": "button", "status": "enabled", "resources": [{"method": "POST", "path": "/api/v1/trading/trade-commands/bulk-close"}]}
+				],
+				"resources": [{"method": "GET", "path": "/api/v1/trading/positions"}]
+			},
+			{
+				"code": "orders",
+				"name": "订单记录",
+				"sequence": 40,
+				"type": "page",
+				"path": "/trading-data/orders",
+				"status": "enabled",
+				"children": [{"code": "cancel", "name": "撤单", "type": "button", "status": "enabled", "resources": [{"method": "POST", "path": "/api/v1/trading/trade-commands"}]}],
+				"resources": [{"method": "GET", "path": "/api/v1/trading/orders"}]
+			},
+			{
+				"code": "fills",
+				"name": "成交记录",
+				"sequence": 30,
+				"type": "page",
+				"path": "/trading-data/fills",
+				"status": "enabled",
+				"resources": [{"method": "GET", "path": "/api/v1/trading/fills"}]
+			},
+			{
+				"code": "income-events",
+				"name": "收益事件",
+				"sequence": 20,
+				"type": "page",
+				"path": "/trading-data/income-events",
+				"status": "enabled",
+				"resources": [{"method": "GET", "path": "/api/v1/trading/income-events"}]
+			}
+		]
+	}
 ]

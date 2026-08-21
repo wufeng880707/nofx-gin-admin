@@ -1,0 +1,64 @@
+[Middleware.Recovery]
+Skip = 3
+
+[Middleware.CORS]
+Enable = false
+AllowOrigins = ["*"]
+AllowMethods = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
+AllowHeaders = ["*"]
+MaxAge = 86400
+AllowWildcard = true
+AllowWebSockets = true
+AllowFiles = true
+
+[Middleware.Trace]
+RequestHeaderKey = "X-Request-Id"
+ResponseTraceKey = "X-Trace-Id"
+
+[Middleware.Logger]
+MaxOutputRequestBodyLen = 4096
+MaxOutputResponseBodyLen = 4096
+
+[Middleware.CopyBody]
+MaxContentLen = 134217728
+
+[Middleware.Auth]
+Disable = false
+SkippedPathPrefixes = ["/api/v1/captcha/", "/api/v1/login"]
+SigningMethod = "HS512"
+SigningKey = "${JWT_SIGNING_KEY}"
+OldSigningKey = ""
+Expired = 86400
+
+[Middleware.Auth.Store]
+Type = "redis"
+Delimiter = ":"
+
+[Middleware.Auth.Store.Redis]
+Addr = "redis:6379"
+Username = ""
+Password = "${REDIS_PASSWORD}"
+DB = 2
+
+[Middleware.RateLimiter]
+Enable = true
+Period = 10
+MaxRequestsPerIP = 1000
+MaxRequestsPerUser = 500
+
+[Middleware.RateLimiter.Store]
+Type = "redis"
+
+[Middleware.RateLimiter.Store.Redis]
+Addr = "redis:6379"
+Username = ""
+Password = "${REDIS_PASSWORD}"
+DB = 10
+
+[Middleware.Casbin]
+Disable = false
+SkippedPathPrefixes = ["/api/v1/captcha/", "/api/v1/login", "/api/v1/current/"]
+LoadThread = 2
+AutoLoadInterval = 3
+ModelFile = "rbac_model.conf"
+GenPolicyFile = "gen_rbac_policy.csv"

@@ -14,6 +14,51 @@ type Config struct {
 	Middleware Middleware
 	Util       Util
 	Dictionary Dictionary
+	Trading    Trading
+}
+
+type Trading struct {
+	AccountSync struct {
+		Enabled               bool   `default:"true"`
+		IntervalSeconds       int    `default:"300"`
+		TimeoutSeconds        int    `default:"60"`
+		SnapshotIntervalHours int    `default:"12"`
+		SnapshotTimeZone      string `default:"Asia/Shanghai"`
+	}
+	UserStream struct {
+		// Enabled starts read-only private WebSocket subscriptions. Reconciliation
+		// remains REST-based and the stream never exposes trading methods.
+		Enabled bool `default:"false"`
+	}
+	TelegramBot struct {
+		// Enabled starts local-friendly Telegram long polling. It remains off by
+		// default because polling and replies are external network side effects.
+		Enabled            bool `default:"false"`
+		PollTimeoutSeconds int  `default:"25"`
+		RefreshSeconds     int  `default:"30"`
+		BindingTTLMinutes  int  `default:"10"`
+	}
+	Notifications struct {
+		// Enabled permits strategy decisions to be delivered automatically. Manual
+		// channel tests remain available while this switch is disabled.
+		Enabled         bool   `default:"false"`
+		ApprovalBaseURL string `default:"http://127.0.0.1:8000/trading-data/approvals"`
+	}
+	MarketStream struct {
+		// Enabled persists public Binance liquidation snapshots for the heatmap.
+		Enabled        bool   `default:"false"`
+		RetentionHours int    `default:"168"`
+		Endpoint       string `default:"wss://fstream.binance.com/ws/!forceOrder@arr"`
+	}
+	Execution struct {
+		// Enabled is the process-wide hard gate for any exchange trading request.
+		// It is intentionally false unless explicitly configured by an operator.
+		Enabled bool `default:"false"`
+		// TestnetOnly prevents production providers from being constructed even
+		// after Enabled is turned on. Keep true until production acceptance.
+		TestnetOnly    bool `default:"true"`
+		TimeoutSeconds int  `default:"15"`
+	}
 }
 
 type General struct {
@@ -23,11 +68,14 @@ type General struct {
 	PprofAddr          string
 	DisableSwagger     bool
 	DisablePrintConfig bool
-	DefaultLoginPwd    string `default:"6351623c8cef86fefabfa7da046fc619"` // MD5(abc-123)
 	WorkDir            string // From command arguments
 	MenuFile           string // From schema.Menus (JSON/YAML)
 	DenyOperateMenu    bool
-	HTTP               struct {
+	Security           struct {
+		// Strict enables production startup checks for authentication keys and credentials.
+		Strict bool
+	}
+	HTTP struct {
 		Addr            string `default:":8040"`
 		ShutdownTimeout int    `default:"10"` // seconds
 		ReadTimeout     int    `default:"60"` // seconds
@@ -37,10 +85,10 @@ type General struct {
 		KeyFile         string
 	}
 	Root struct {
-		ID       string `default:"root"`
-		Username string `default:"admin"`
-		Password string
-		Name     string `default:"Admin"`
+		ID           string `default:"root"`
+		Username     string `default:"admin"`
+		PasswordHash string
+		Name         string `default:"Admin"`
 	}
 }
 

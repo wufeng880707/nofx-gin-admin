@@ -54,8 +54,116 @@ func (a *Menu) InitFromFile(ctx context.Context, menuFile string) error {
 	}
 
 	return a.Trans.Exec(ctx, func(ctx context.Context) error {
-		return a.createInBatchByParent(ctx, menus, nil)
+		if err := a.createInBatchByParent(ctx, menus, nil); err != nil {
+			return err
+		}
+		if err := a.migrateLegacyHome(ctx, menus); err != nil {
+			return err
+		}
+		return a.migrateTradingDataMenus(ctx, menus)
 	})
+}
+
+func (a *Menu) migrateTradingDataMenus(ctx context.Context, configuredMenus schema.Menus) error {
+	sourceConfig := configuredMenus.FindByCode("trading")
+	targetConfig := configuredMenus.FindByCode("trading-data")
+	if sourceConfig == nil || targetConfig == nil || targetConfig.Children == nil {
+		return nil
+	}
+	source, err := a.MenuDAL.GetByCodeAndParentID(ctx, sourceConfig.Code, "")
+	if err != nil || source == nil {
+		return err
+	}
+	target, err := a.MenuDAL.GetByCodeAndParentID(ctx, targetConfig.Code, "")
+	if err != nil || target == nil {
+		return err
+	}
+
+	for _, configuredChild := range *targetConfig.Children {
+		legacy, queryErr := a.MenuDAL.GetByCodeAndParentID(ctx, configuredChild.Code, source.ID)
+		if queryErr != nil {
+			return queryErr
+		}
+		moved, queryErr := a.MenuDAL.GetByCodeAndParentID(ctx, configuredChild.Code, target.ID)
+		if queryErr != nil {
+			return queryErr
+		}
+		if legacy == nil || moved == nil {
+			continue
+		}
+		if err := a.migrateRoleMenuRefs(ctx, legacy.ID, moved.ID); err != nil {
+			return err
+		}
+		if err := a.delete(ctx, legacy.ID); err != nil {
+			return err
+		}
+		logging.Context(ctx).Info("Migrated trading data menu",
+			zap.String("code", configuredChild.Code), zap.String("menu_id", moved.ID))
+	}
+	return nil
+}
+
+func (a *Menu) migrateRoleMenuRefs(ctx context.Context, sourceMenuID, targetMenuID string) error {
+	sourceRefs, err := a.RoleMenuDAL.Query(ctx, schema.RoleMenuQueryParam{MenuID: sourceMenuID})
+	if err != nil {
+		return err
+	}
+	targetRefs, err := a.RoleMenuDAL.Query(ctx, schema.RoleMenuQueryParam{MenuID: targetMenuID})
+	if err != nil {
+		return err
+	}
+	targetRoles := make(map[string]struct{}, len(targetRefs.Data))
+	for _, ref := range targetRefs.Data {
+		targetRoles[ref.RoleID] = struct{}{}
+	}
+	for _, ref := range sourceRefs.Data {
+		if _, exists := targetRoles[ref.RoleID]; exists {
+			if err := a.RoleMenuDAL.Delete(ctx, ref.ID); err != nil {
+				return err
+			}
+			continue
+		}
+		ref.MenuID = targetMenuID
+		ref.UpdatedAt = time.Now()
+		if err := a.RoleMenuDAL.Update(ctx, ref); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (a *Menu) migrateLegacyHome(ctx context.Context, configuredMenus schema.Menus) error {
+	dashboardConfig := configuredMenus.FindByCode("dashboard")
+	if dashboardConfig == nil || dashboardConfig.Children == nil || dashboardConfig.Children.FindByCode("workplace") == nil {
+		return nil
+	}
+
+	legacyHome, err := a.MenuDAL.GetByCodeAndParentID(ctx, "home", "")
+	if err != nil || legacyHome == nil || legacyHome.Path != "/home" {
+		return err
+	}
+
+	dashboard, err := a.MenuDAL.GetByCodeAndParentID(ctx, "dashboard", "")
+	if err != nil || dashboard == nil {
+		return err
+	}
+	workplace, err := a.MenuDAL.GetByCodeAndParentID(ctx, "workplace", dashboard.ID)
+	if err != nil || workplace == nil {
+		return err
+	}
+
+	if err := a.migrateRoleMenuRefs(ctx, legacyHome.ID, workplace.ID); err != nil {
+		return err
+	}
+
+	if err := a.delete(ctx, legacyHome.ID); err != nil {
+		return err
+	}
+	logging.Context(ctx).Info("Migrated legacy home menu to dashboard workplace",
+		zap.String("legacy_menu_id", legacyHome.ID),
+		zap.String("workplace_menu_id", workplace.ID),
+	)
+	return nil
 }
 
 func (a *Menu) createInBatchByParent(ctx context.Context, items schema.Menus, parent *schema.Menu) error {

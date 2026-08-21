@@ -24,6 +24,7 @@ func (a *RoleMenu) TableName() string {
 type RoleMenuQueryParam struct {
 	util.PaginationParam
 	RoleID string `form:"-"` // From Role.ID
+	MenuID string `form:"-"` // From Menu.ID
 }
 
 // Defining the query options for the `RoleMenu` struct.

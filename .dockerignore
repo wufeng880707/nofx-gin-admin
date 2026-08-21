@@ -1,0 +1,17 @@
+.git
+.github
+.idea
+.vscode
+.devcontainer
+data
+release
+tmp
+ginadmin
+ginadmin_linux_amd64
+*.log
+*.lock
+web/node_modules
+web/dist
+web/src/.umi
+web/src/.umi-production
+docker/.env

@@ -1,0 +1,57 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Provider circuits open",
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0},
+      "targets": [{"expr": "sum(gauge_state{module=\"trading_provider\",state=~\".+_circuit_open\"})", "refId": "A"}]
+    },
+    {
+      "type": "stat",
+      "title": "Runtime failures (10m)",
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0},
+      "targets": [{"expr": "sum(increase(counter_requests{module=\"trading_runtime\",code=\"error\"}[10m]))", "refId": "A"}]
+    },
+    {
+      "type": "stat",
+      "title": "AI success rate (10m)",
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "percentunit"}, "overrides": []},
+      "targets": [{"expr": "sum(rate(counter_requests{module=\"trading_ai\",code=\"success\"}[10m])) / clamp_min(sum(rate(counter_requests{module=\"trading_ai\"}[10m])), 0.000001)", "refId": "A"}]
+    },
+    {
+      "type": "stat",
+      "title": "AI p95 latency",
+      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "targets": [{"expr": "max(summary_latency{module=\"trading_ai\",quantile=\"0.95\"})", "refId": "A"}]
+    },
+    {
+      "type": "timeseries",
+      "title": "Provider request rate by code",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 5},
+      "targets": [{"expr": "sum by (api, code) (rate(counter_requests{module=\"trading_provider\"}[5m]))", "legendFormat": "{{api}} {{code}}", "refId": "A"}]
+    },
+    {
+      "type": "timeseries",
+      "title": "Runtime and AI p95 latency",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 5},
+      "fieldConfig": {"defaults": {"unit": "s"}, "overrides": []},
+      "targets": [
+        {"expr": "max by (module, api) (summary_latency{module=~\"trading_runtime|trading_ai\",quantile=\"0.95\"})", "legendFormat": "{{module}} {{api}}", "refId": "A"}
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "tags": ["xtrading", "trading"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timezone": "browser",
+  "title": "XTrading Operations",
+  "uid": "xtrading-operations",
+  "version": 1
+}

@@ -502,6 +502,210 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/market/context": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "MarketAPI"
+                ],
+                "summary": "Get public order book, derivatives metrics, taker-flow proxy and risk radar",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.MarketContext"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/market/instruments": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "MarketAPI"
+                ],
+                "summary": "Query Binance or OKX instruments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.MarketInstrument"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/market/klines": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "MarketAPI"
+                ],
+                "summary": "Query Binance or OKX candlesticks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.MarketKline"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/market/liquidations/heatmap": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "MarketAPI"
+                ],
+                "summary": "Query persisted Binance USD-M liquidation heatmap buckets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.LiquidationHeatmap"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/market/provider-capabilities": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "MarketAPI"
+                ],
+                "summary": "Get the explicit provider and public data-source capability matrix",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.ProviderCapabilityMatrix"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/market/ticker": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "MarketAPI"
+                ],
+                "summary": "Get a Binance or OKX 24-hour ticker",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.MarketTicker"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/menus": {
             "get": {
                 "security": [
@@ -1066,6 +1270,542 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/trading/ai-invocations/summary": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingObservationAPI"
+                ],
+                "summary": "Aggregate owner-scoped AI invocation usage and reliability",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.AIInvocationSummary"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/assistant/tasks": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingAssistantAPI"
+                ],
+                "summary": "Execute an owner-scoped read-only trading assistant task",
+                "parameters": [
+                    {
+                        "description": "Task request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.AssistantTaskForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.AssistantTaskView"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/backtests": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Query spot strategy backtest tasks",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.SpotBacktestTask"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Create a deterministic spot core-satellite backtest",
+                "parameters": [
+                    {
+                        "description": "Backtest configuration",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.SpotBacktestCreateForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.SpotBacktestTask"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/backtests/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Get one spot strategy backtest task",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.SpotBacktestTask"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/backtests/{id}/cancel": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Cancel a running spot strategy backtest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/util.ResponseResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/backtests/{id}/result": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Get metrics, benchmarks, lots and events for a completed backtest",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.SpotBacktestResultView"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/decisions/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingObservationAPI"
+                ],
+                "summary": "Get one owner-scoped trading decision with auditable input and output",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Decision ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/schema.DecisionDetailView"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/exchanges": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingCatalogAPI"
+                ],
+                "summary": "Query masked exchange configurations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.ExchangeView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/models": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingCatalogAPI"
+                ],
+                "summary": "Query masked AI model configurations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.AIModelView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/spot-strategy/cycles/{cycleID}/events": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Query immutable state events for a spot strategy cycle",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cycle ID",
+                        "name": "cycleID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.SpotStateEvent"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/spot-strategy/lots": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "SpotStrategyAPI"
+                ],
+                "summary": "Query explicitly attributed spot position lots",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.SpotPositionLot"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/strategies": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingCatalogAPI"
+                ],
+                "summary": "Query strategy summaries",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.StrategyView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/trading/traders": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "TradingCatalogAPI"
+                ],
+                "summary": "Query trader configurations and runtime snapshots",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/util.ResponseResult"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/schema.TraderView"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "security": [
@@ -1377,6 +2117,15 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "new password",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.ResetUserPasswordForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -1403,7 +2152,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "errors.Error": {
+        "github_com_LyricTian_gin-admin_v10_pkg_errors.Error": {
             "type": "object",
             "properties": {
                 "code": {
@@ -1420,12 +2169,349 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.AIInvocationMetric": {
+            "type": "object",
+            "properties": {
+                "average_latency_ms": {
+                    "type": "number"
+                },
+                "calls": {
+                    "type": "integer"
+                },
+                "estimated_cost_usd": {
+                    "type": "string"
+                },
+                "failures": {
+                    "type": "integer"
+                },
+                "input_tokens": {
+                    "type": "integer"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "output_tokens": {
+                    "type": "integer"
+                },
+                "success_rate": {
+                    "type": "number"
+                },
+                "successes": {
+                    "type": "integer"
+                },
+                "total_tokens": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.AIInvocationSummary": {
+            "type": "object",
+            "properties": {
+                "by_model": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AIInvocationMetric"
+                    }
+                },
+                "by_strategy": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AIInvocationMetric"
+                    }
+                },
+                "by_trader": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.AIInvocationMetric"
+                    }
+                },
+                "end_at": {
+                    "type": "string"
+                },
+                "overall": {
+                    "$ref": "#/definitions/schema.AIInvocationMetric"
+                },
+                "start_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AIModelView": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "custom_api_url": {
+                    "type": "string"
+                },
+                "custom_model_name": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "has_api_key": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "input_price_per_m_tokens": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "output_price_per_m_tokens": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AssistantTaskForm": {
+            "type": "object",
+            "required": [
+                "message"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "schema.AssistantTaskView": {
+            "type": "object",
+            "properties": {
+                "skill": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.Captcha": {
             "type": "object",
             "properties": {
                 "captcha_id": {
                     "description": "Captcha ID",
                     "type": "string"
+                }
+            }
+        },
+        "schema.DecisionDetailView": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "ai_request_duration_ms": {
+                    "type": "integer"
+                },
+                "candidate_coins": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "cycle_number": {
+                    "type": "integer"
+                },
+                "decided_at": {
+                    "type": "string"
+                },
+                "decision": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "exchange_id": {
+                    "type": "string"
+                },
+                "execution_log": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "input_prompt": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "raw_response": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "trader_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.ExchangeView": {
+            "type": "object",
+            "properties": {
+                "account_name": {
+                    "type": "string"
+                },
+                "account_type": {
+                    "type": "string"
+                },
+                "account_user": {
+                    "type": "string"
+                },
+                "api_key_index": {
+                    "type": "integer"
+                },
+                "builder_approved": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "exchange_type": {
+                    "type": "string"
+                },
+                "has_api_key": {
+                    "type": "boolean"
+                },
+                "has_api_key_private_key": {
+                    "type": "boolean"
+                },
+                "has_passphrase": {
+                    "type": "boolean"
+                },
+                "has_private_key": {
+                    "type": "boolean"
+                },
+                "has_secret_key": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "signer_address": {
+                    "type": "string"
+                },
+                "testnet": {
+                    "type": "boolean"
+                },
+                "unified_account": {
+                    "type": "boolean"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "wallet_address": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.LiquidationHeatmap": {
+            "type": "object",
+            "properties": {
+                "cells": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.LiquidationHeatmapCell"
+                    }
+                },
+                "coverage_notice": {
+                    "type": "string"
+                },
+                "data_available": {
+                    "type": "boolean"
+                },
+                "event_count": {
+                    "type": "integer"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "from": {
+                    "type": "string"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "max_price": {
+                    "type": "number"
+                },
+                "min_price": {
+                    "type": "number"
+                },
+                "price_buckets": {
+                    "type": "integer"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "time_buckets": {
+                    "type": "integer"
+                },
+                "to": {
+                    "type": "string"
+                },
+                "total_notional_usdt": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.LiquidationHeatmapCell": {
+            "type": "object",
+            "properties": {
+                "event_count": {
+                    "type": "integer"
+                },
+                "long_notional_usdt": {
+                    "type": "number"
+                },
+                "price_index": {
+                    "type": "integer"
+                },
+                "short_notional_usdt": {
+                    "type": "number"
+                },
+                "time_index": {
+                    "type": "integer"
                 }
             }
         },
@@ -1496,8 +2582,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "description": "Login password (md5 hash)",
-                    "type": "string"
+                    "description": "Login password",
+                    "type": "string",
+                    "maxLength": 72
                 },
                 "username": {
                     "description": "Login name",
@@ -1519,6 +2606,252 @@ const docTemplate = `{
                 "token_type": {
                     "description": "Token type (Usage: Authorization=${token_type} ${access_token})",
                     "type": "string"
+                }
+            }
+        },
+        "schema.MarketContext": {
+            "type": "object",
+            "properties": {
+                "derivatives": {
+                    "$ref": "#/definitions/schema.MarketDerivatives"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "generated_at": {
+                    "type": "integer"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "order_book": {
+                    "$ref": "#/definitions/schema.MarketOrderBook"
+                },
+                "risk_radar": {
+                    "$ref": "#/definitions/schema.MarketRiskRadar"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "ticker": {
+                    "$ref": "#/definitions/schema.MarketTicker"
+                }
+            }
+        },
+        "schema.MarketDataSourceCapability": {
+            "type": "object",
+            "properties": {
+                "authorization": {
+                    "type": "string"
+                },
+                "cost": {
+                    "type": "string"
+                },
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limitations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MarketDepthLevel": {
+            "type": "object",
+            "properties": {
+                "price": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MarketDerivatives": {
+            "type": "object",
+            "properties": {
+                "flow_is_proxy": {
+                    "type": "boolean"
+                },
+                "flow_source": {
+                    "type": "string"
+                },
+                "funding_rate": {
+                    "type": "string"
+                },
+                "mark_price": {
+                    "type": "string"
+                },
+                "next_funding_time": {
+                    "type": "integer"
+                },
+                "open_interest": {
+                    "type": "string"
+                },
+                "open_interest_value_usdt": {
+                    "type": "string"
+                },
+                "taker_buy_sell_ratio": {
+                    "type": "number"
+                },
+                "taker_buy_volume": {
+                    "type": "string"
+                },
+                "taker_sell_volume": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MarketInstrument": {
+            "type": "object",
+            "properties": {
+                "base_asset": {
+                    "type": "string"
+                },
+                "display": {
+                    "type": "string"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "quote_asset": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MarketKline": {
+            "type": "object",
+            "properties": {
+                "close": {
+                    "type": "string"
+                },
+                "closed": {
+                    "type": "boolean"
+                },
+                "high": {
+                    "type": "string"
+                },
+                "low": {
+                    "type": "string"
+                },
+                "open": {
+                    "type": "string"
+                },
+                "quote_volume": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "integer"
+                },
+                "volume": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.MarketOrderBook": {
+            "type": "object",
+            "properties": {
+                "asks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.MarketDepthLevel"
+                    }
+                },
+                "bids": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.MarketDepthLevel"
+                    }
+                },
+                "imbalance": {
+                    "type": "number"
+                },
+                "spread_bps": {
+                    "type": "number"
+                },
+                "timestamp": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.MarketRiskRadar": {
+            "type": "object",
+            "properties": {
+                "book_imbalance": {
+                    "type": "number"
+                },
+                "crowding_risk": {
+                    "type": "string"
+                },
+                "funding_rate_pct": {
+                    "type": "number"
+                },
+                "liquidity_risk": {
+                    "type": "string"
+                },
+                "risk_score": {
+                    "type": "integer"
+                },
+                "spread_bps": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.MarketTicker": {
+            "type": "object",
+            "properties": {
+                "base_volume": {
+                    "type": "string"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "high_price": {
+                    "type": "string"
+                },
+                "last_price": {
+                    "type": "string"
+                },
+                "low_price": {
+                    "type": "string"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "open_price": {
+                    "type": "string"
+                },
+                "price_change": {
+                    "type": "string"
+                },
+                "price_change_rate": {
+                    "type": "string"
+                },
+                "quote_volume": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "integer"
                 }
             }
         },
@@ -1686,6 +3019,83 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.ProviderCapability": {
+            "type": "object",
+            "properties": {
+                "account_types": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "credential_model": {
+                    "type": "string"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "history": {
+                    "type": "boolean"
+                },
+                "kind": {
+                    "type": "string"
+                },
+                "migration_status": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "public_market_data": {
+                    "type": "boolean"
+                },
+                "snapshot": {
+                    "type": "boolean"
+                },
+                "trading": {
+                    "type": "boolean"
+                },
+                "trading_gate": {
+                    "type": "string"
+                },
+                "user_stream": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "schema.ProviderCapabilityMatrix": {
+            "type": "object",
+            "properties": {
+                "data_sources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.MarketDataSourceCapability"
+                    }
+                },
+                "providers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.ProviderCapability"
+                    }
+                }
+            }
+        },
+        "schema.ResetUserPasswordForm": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 72,
+                    "minLength": 12
+                }
+            }
+        },
         "schema.Role": {
             "type": "object",
             "properties": {
@@ -1798,6 +3208,776 @@ const docTemplate = `{
                 }
             }
         },
+        "schema.SpotAcceptanceItem": {
+            "type": "object",
+            "properties": {
+                "actual": {
+                    "type": "string"
+                },
+                "expected": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "not_applicable": {
+                    "type": "boolean"
+                },
+                "passed": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "schema.SpotBacktestBenchmark": {
+            "type": "object",
+            "properties": {
+                "calmar": {
+                    "type": "number"
+                },
+                "final_equity": {
+                    "type": "number"
+                },
+                "max_drawdown": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "total_return": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.SpotBacktestCostScenario": {
+            "type": "object",
+            "properties": {
+                "fee_rate_bps": {
+                    "type": "number"
+                },
+                "slippage_bps": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.SpotBacktestCreateForm": {
+            "type": "object",
+            "required": [
+                "end_time",
+                "exchange",
+                "initial_capital",
+                "interval",
+                "start_time",
+                "symbol"
+            ],
+            "properties": {
+                "benchmarks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "config": {
+                    "$ref": "#/definitions/schema.SpotCoreSatelliteConfig"
+                },
+                "cost_scenario": {
+                    "$ref": "#/definitions/schema.SpotBacktestCostScenario"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "initial_capital": {
+                    "type": "string"
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "strategy_id": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.SpotBacktestEvent": {
+            "type": "object",
+            "properties": {
+                "from_state": {
+                    "type": "string"
+                },
+                "lot_id": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "integer"
+                },
+                "to_state": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.SpotBacktestLot": {
+            "type": "object",
+            "properties": {
+                "acquired_qty": {
+                    "type": "number"
+                },
+                "bucket": {
+                    "type": "string"
+                },
+                "closed_at": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "layer_no": {
+                    "type": "integer"
+                },
+                "open_price": {
+                    "type": "number"
+                },
+                "open_time": {
+                    "type": "integer"
+                },
+                "realized_pnl": {
+                    "type": "number"
+                },
+                "remaining_qty": {
+                    "type": "number"
+                },
+                "target_price": {
+                    "type": "number"
+                },
+                "total_cost": {
+                    "type": "number"
+                }
+            }
+        },
+        "schema.SpotBacktestMetrics": {
+            "type": "object",
+            "properties": {
+                "annualized_return": {
+                    "type": "number"
+                },
+                "average_cash_ratio": {
+                    "type": "number"
+                },
+                "calmar": {
+                    "type": "number"
+                },
+                "core_remaining_quantity": {
+                    "type": "number"
+                },
+                "fees": {
+                    "type": "number"
+                },
+                "final_equity": {
+                    "type": "number"
+                },
+                "initial_capital": {
+                    "type": "number"
+                },
+                "losing_trades": {
+                    "type": "integer"
+                },
+                "max_drawdown": {
+                    "type": "number"
+                },
+                "maximum_daily_buy_ratio": {
+                    "type": "number"
+                },
+                "maximum_exposure_ratio": {
+                    "type": "number"
+                },
+                "minimum_cash_ratio": {
+                    "type": "number"
+                },
+                "profit_factor": {
+                    "type": "number"
+                },
+                "profit_factor_available": {
+                    "type": "boolean"
+                },
+                "realized_pnl": {
+                    "type": "number"
+                },
+                "satellite_remaining_quantity": {
+                    "type": "number"
+                },
+                "total_return": {
+                    "type": "number"
+                },
+                "trade_count": {
+                    "type": "integer"
+                },
+                "turnover": {
+                    "type": "number"
+                },
+                "winning_trades": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.SpotBacktestPoint": {
+            "type": "object",
+            "properties": {
+                "cash": {
+                    "type": "number"
+                },
+                "equity": {
+                    "type": "number"
+                },
+                "exposure": {
+                    "type": "number"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.SpotBacktestResultView": {
+            "type": "object",
+            "properties": {
+                "acceptance": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SpotAcceptanceItem"
+                    }
+                },
+                "benchmarks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SpotBacktestBenchmark"
+                    }
+                },
+                "equity_curve": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SpotBacktestPoint"
+                    }
+                },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SpotBacktestEvent"
+                    }
+                },
+                "lots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.SpotBacktestLot"
+                    }
+                },
+                "metrics": {
+                    "$ref": "#/definitions/schema.SpotBacktestMetrics"
+                },
+                "task": {
+                    "$ref": "#/definitions/schema.SpotBacktestTask"
+                }
+            }
+        },
+        "schema.SpotBacktestTask": {
+            "type": "object",
+            "properties": {
+                "benchmarks": {
+                    "type": "string"
+                },
+                "cancel_requested": {
+                    "type": "boolean"
+                },
+                "code_version": {
+                    "type": "string"
+                },
+                "config": {
+                    "type": "string"
+                },
+                "cost_scenario": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "error_code": {
+                    "type": "string"
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "finished_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "initial_capital": {
+                    "type": "string"
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "processed_market_at": {
+                    "type": "string"
+                },
+                "progress": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "started_at": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "strategy_id": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.SpotCoreSatelliteConfig": {
+            "type": "object",
+            "properties": {
+                "accumulation_cooldown_bars": {
+                    "type": "integer"
+                },
+                "accumulation_drawdowns": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "accumulation_weights": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "allow_live_execution": {
+                    "type": "boolean"
+                },
+                "breakout_confirm_bars": {
+                    "type": "integer"
+                },
+                "breakout_volume_multiplier": {
+                    "type": "number"
+                },
+                "core_budget_ratio": {
+                    "type": "number"
+                },
+                "core_minimum_retention_ratio": {
+                    "type": "number"
+                },
+                "distribution_lookback_bars": {
+                    "type": "integer"
+                },
+                "distribution_step_gain_pct": {
+                    "type": "number"
+                },
+                "distribution_step_sell_ratio": {
+                    "type": "number"
+                },
+                "enable_drawdown_risk_control": {
+                    "type": "boolean"
+                },
+                "exchange": {
+                    "type": "string"
+                },
+                "execution_timeframe": {
+                    "type": "string"
+                },
+                "fee_rate_bps": {
+                    "type": "number"
+                },
+                "low_area_drawdown_pct": {
+                    "type": "number"
+                },
+                "low_area_lookback_bars": {
+                    "type": "integer"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "max_core_distribution_ratio": {
+                    "type": "number"
+                },
+                "max_daily_buy_ratio": {
+                    "type": "number"
+                },
+                "max_strategy_drawdown_pct": {
+                    "type": "number"
+                },
+                "max_symbol_exposure_ratio": {
+                    "type": "number"
+                },
+                "minimum_cash_ratio": {
+                    "type": "number"
+                },
+                "quote_asset": {
+                    "type": "string"
+                },
+                "resistance_lookback_bars": {
+                    "type": "integer"
+                },
+                "satellite_budget_ratio": {
+                    "type": "number"
+                },
+                "satellite_entry_drawdowns": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "satellite_sell_ratio": {
+                    "type": "number"
+                },
+                "satellite_take_profit_ratio": {
+                    "type": "number"
+                },
+                "slippage_bps": {
+                    "type": "number"
+                },
+                "stabilization_bars": {
+                    "type": "integer"
+                },
+                "strategy_budget_usdt": {
+                    "type": "number"
+                },
+                "stress_slippage_bps": {
+                    "type": "number"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "trend_filter_period": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.SpotPositionLot": {
+            "type": "object",
+            "properties": {
+                "acquired_qty": {
+                    "type": "string"
+                },
+                "bucket": {
+                    "type": "string"
+                },
+                "closed_at": {
+                    "type": "string"
+                },
+                "config_version": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "cycle_id": {
+                    "type": "string"
+                },
+                "exchange_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "layer_no": {
+                    "type": "integer"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "opened_at": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "remaining_qty": {
+                    "type": "string"
+                },
+                "reserved_qty": {
+                    "type": "string"
+                },
+                "source_buy_fill_id": {
+                    "type": "string"
+                },
+                "source_order_intent_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "strategy_id": {
+                    "type": "string"
+                },
+                "symbol": {
+                    "type": "string"
+                },
+                "target_net_profit_rate": {
+                    "type": "string"
+                },
+                "target_price": {
+                    "type": "string"
+                },
+                "total_cost": {
+                    "type": "string"
+                },
+                "trader_id": {
+                    "type": "string"
+                },
+                "unit_cost": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.SpotStateEvent": {
+            "type": "object",
+            "properties": {
+                "config_version": {
+                    "type": "integer"
+                },
+                "correlation_id": {
+                    "type": "string"
+                },
+                "cycle_id": {
+                    "type": "string"
+                },
+                "event_type": {
+                    "type": "string"
+                },
+                "from_state": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "market_time": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "processed_at": {
+                    "type": "string"
+                },
+                "reason_code": {
+                    "type": "string"
+                },
+                "risk_snapshot": {
+                    "type": "string"
+                },
+                "signal_snapshot": {
+                    "type": "string"
+                },
+                "strategy_id": {
+                    "type": "string"
+                },
+                "to_state": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.StrategyView": {
+            "type": "object",
+            "properties": {
+                "config_visible": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_version": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                },
+                "is_default": {
+                    "type": "boolean"
+                },
+                "is_public": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "published_version": {
+                    "type": "integer"
+                },
+                "strategy_type": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.TraderView": {
+            "type": "object",
+            "properties": {
+                "ai_consent_at": {
+                    "type": "string"
+                },
+                "ai_consent_model_id": {
+                    "type": "string"
+                },
+                "ai_model_id": {
+                    "type": "string"
+                },
+                "auto_apply_strategy_updates": {
+                    "type": "boolean"
+                },
+                "competition_alias": {
+                    "type": "string"
+                },
+                "competition_joined_at": {
+                    "type": "string"
+                },
+                "competition_public_id": {
+                    "type": "string"
+                },
+                "consecutive_failures": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "cycle_number": {
+                    "type": "integer"
+                },
+                "desired_state": {
+                    "type": "string"
+                },
+                "exchange_id": {
+                    "type": "string"
+                },
+                "execution_mode": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "initial_balance": {
+                    "type": "string"
+                },
+                "is_cross_margin": {
+                    "type": "boolean"
+                },
+                "is_simulation": {
+                    "type": "boolean"
+                },
+                "last_cycle_duration_ms": {
+                    "type": "integer"
+                },
+                "last_decision_at": {
+                    "type": "string"
+                },
+                "last_error_code": {
+                    "type": "string"
+                },
+                "last_error_message": {
+                    "type": "string"
+                },
+                "last_heartbeat_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "notification_channel_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "owner_user_id": {
+                    "type": "string"
+                },
+                "pause_reason": {
+                    "type": "string"
+                },
+                "runtime_state": {
+                    "type": "string"
+                },
+                "safe_mode": {
+                    "type": "boolean"
+                },
+                "scan_interval_minutes": {
+                    "type": "integer"
+                },
+                "show_in_competition": {
+                    "type": "boolean"
+                },
+                "strategy_id": {
+                    "type": "string"
+                },
+                "strategy_state": {
+                    "type": "string"
+                },
+                "strategy_version": {
+                    "type": "integer"
+                },
+                "sync_state": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.UpdateCurrentUser": {
             "type": "object",
             "required": [
@@ -1834,12 +4014,15 @@ const docTemplate = `{
             ],
             "properties": {
                 "new_password": {
-                    "description": "New password (md5 hash)",
-                    "type": "string"
+                    "description": "New password",
+                    "type": "string",
+                    "maxLength": 72,
+                    "minLength": 12
                 },
                 "old_password": {
-                    "description": "Old password (md5 hash)",
-                    "type": "string"
+                    "description": "Old password",
+                    "type": "string",
+                    "maxLength": 72
                 }
             }
         },
@@ -1911,9 +4094,10 @@ const docTemplate = `{
                     "maxLength": 64
                 },
                 "password": {
-                    "description": "Password for login (md5 hash)",
+                    "description": "Password for login",
                     "type": "string",
-                    "maxLength": 64
+                    "maxLength": 72,
+                    "minLength": 12
                 },
                 "phone": {
                     "description": "Phone number of user",
@@ -1981,7 +4165,7 @@ const docTemplate = `{
             "properties": {
                 "data": {},
                 "error": {
-                    "$ref": "#/definitions/errors.Error"
+                    "$ref": "#/definitions/github_com_LyricTian_gin-admin_v10_pkg_errors.Error"
                 },
                 "success": {
                     "type": "boolean"
@@ -2007,8 +4191,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "ginadmin",
-	Description:      "A lightweight, flexible, elegant and full-featured RBAC scaffolding based on GIN + GORM 2.0 + Casbin 2.0 + Wire DI.",
+	Title:            "XTrading API",
+	Description:      "XTrading management API for exchange accounts, AI models, strategies, traders, runtime observations and RBAC operations.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

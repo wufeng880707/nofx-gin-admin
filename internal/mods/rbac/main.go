@@ -41,15 +41,15 @@ func (a *RBAC) Init(ctx context.Context) error {
 		}
 	}
 
-	if err := a.Casbinx.Load(ctx); err != nil {
-		return err
-	}
-
 	if name := config.C.General.MenuFile; name != "" {
 		fullPath := filepath.Join(config.C.General.WorkDir, name)
 		if err := a.MenuAPI.MenuBIZ.InitFromFile(ctx, fullPath); err != nil {
 			logging.Context(ctx).Error("failed to init menu data", zap.Error(err), zap.String("file", fullPath))
 		}
+	}
+
+	if err := a.Casbinx.Load(ctx); err != nil {
+		return err
 	}
 
 	return nil

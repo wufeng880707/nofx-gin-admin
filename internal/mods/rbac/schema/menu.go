@@ -73,6 +73,15 @@ type MenuQueryResult struct {
 // Defining the slice of `Menu` struct.
 type Menus []*Menu
 
+func (a Menus) FindByCode(code string) *Menu {
+	for _, item := range a {
+		if item.Code == code {
+			return item
+		}
+	}
+	return nil
+}
+
 func (a Menus) Len() int {
 	return len(a)
 }

@@ -26,9 +26,9 @@ MaxContentLen = 134217728 # 128MB
 
 [Middleware.Auth]
 Disable = false
-SkippedPathPrefixes = ["/api/v1/captcha/", "/api/v1/login"]
+SkippedPathPrefixes = ["/api/v1/captcha/", "/api/v1/login", "/api/v1/competition/"]
 SigningMethod = "HS512" # HS256/HS384/HS512
-SigningKey = "XnEsT0S@" # Secret key
+SigningKey = "local-development-only-signing-key-change-me" # Local development only
 OldSigningKey = "" # Old secret key (For change secret key)
 Expired = 86400 # seconds
 
@@ -69,7 +69,7 @@ DB = 10
 
 [Middleware.Casbin]
 Disable = false
-SkippedPathPrefixes = ["/api/v1/captcha/", "/api/v1/login", "/api/v1/current/"]
+SkippedPathPrefixes = ["/api/v1/captcha/", "/api/v1/login", "/api/v1/current/", "/api/v1/competition/"]
 LoadThread = 2
 AutoLoadInterval = 3 # seconds
 ModelFile = "rbac_model.conf"

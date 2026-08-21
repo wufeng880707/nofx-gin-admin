@@ -1,0 +1,110 @@
+.page {
+  min-height: 100vh;
+  color: var(--ant-color-text);
+  background: var(--ant-color-bg-layout);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--ant-color-border-secondary);
+  background: var(--ant-color-bg-container);
+}
+
+.brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 18px;
+}
+
+.mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  font-weight: 700;
+  background: var(--ant-color-primary);
+  border-radius: 4px;
+  place-items: center;
+}
+
+.content {
+  width: min(1440px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.titleRow :global(.ant-typography) {
+  margin: 0;
+}
+
+.notice {
+  margin-bottom: 16px;
+}
+
+.positive {
+  color: var(--ant-color-success);
+}
+
+.negative {
+  color: var(--ant-color-error);
+}
+
+.chart {
+  width: 100%;
+  min-height: 320px;
+  margin-top: 20px;
+}
+
+.detailMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.detailMetrics > div {
+  display: flex;
+  min-height: 78px;
+  padding: 12px;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 4px;
+  background: var(--ant-color-fill-quaternary);
+}
+
+.detailMetrics strong {
+  font-size: 18px;
+}
+
+@media (max-width: 720px) {
+  .header {
+    padding: 0 16px;
+  }
+
+  .content {
+    width: calc(100% - 24px);
+    padding-top: 18px;
+  }
+
+  .titleRow {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .detailMetrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

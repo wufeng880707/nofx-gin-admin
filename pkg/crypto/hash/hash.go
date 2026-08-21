@@ -1,24 +1,11 @@
 package hash
 
 import (
-	"crypto/md5"
 	"crypto/sha1"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
-
-// md5 hash
-func MD5(b []byte) string {
-	h := md5.New()
-	_, _ = h.Write(b)
-	return fmt.Sprintf("%x", h.Sum(nil))
-}
-
-// md5 hash
-func MD5String(s string) string {
-	return MD5([]byte(s))
-}
 
 // sha1 hash
 func SHA1(b []byte) string {

@@ -2,8 +2,8 @@
   "openapi" : "3.0.1",
   "info" : {
     "contact" : { },
-    "description" : "A lightweight, flexible, elegant and full-featured RBAC scaffolding based on GIN + GORM 2.0 + Casbin 2.0 + Wire DI.",
-    "title" : "ginadmin",
+    "description" : "XTrading management API for exchange accounts, AI models, strategies, traders, runtime observations and RBAC operations.",
+    "title" : "XTrading API",
     "version" : "v10.1.0"
   },
   "servers" : [ {
@@ -501,6 +501,132 @@
         "summary" : "Login system with username and password",
         "tags" : [ "LoginAPI" ],
         "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/api/v1/market/context" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_market_context_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Get public order book, derivatives metrics, taker-flow proxy and risk radar",
+        "tags" : [ "MarketAPI" ]
+      }
+    },
+    "/api/v1/market/instruments" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_market_instruments_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query Binance or OKX instruments",
+        "tags" : [ "MarketAPI" ]
+      }
+    },
+    "/api/v1/market/klines" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_market_klines_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query Binance or OKX candlesticks",
+        "tags" : [ "MarketAPI" ]
+      }
+    },
+    "/api/v1/market/liquidations/heatmap" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_market_liquidations_heatmap_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query persisted Binance USD-M liquidation heatmap buckets",
+        "tags" : [ "MarketAPI" ]
+      }
+    },
+    "/api/v1/market/provider-capabilities" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_market_provider_capabilities_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Get the explicit provider and public data-source capability matrix",
+        "tags" : [ "MarketAPI" ]
+      }
+    },
+    "/api/v1/market/ticker" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_market_ticker_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Get a Binance or OKX 24-hour ticker",
+        "tags" : [ "MarketAPI" ]
       }
     },
     "/api/v1/menus" : {
@@ -1098,6 +1224,174 @@
         "x-codegen-request-body-name" : "body"
       }
     },
+    "/api/v1/trading/ai-invocations/summary" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_ai_invocations_summary_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Aggregate owner-scoped AI invocation usage and reliability",
+        "tags" : [ "TradingObservationAPI" ]
+      }
+    },
+    "/api/v1/trading/assistant/tasks" : {
+      "post" : {
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/schema.AssistantTaskForm"
+              }
+            }
+          },
+          "description" : "Task request",
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_assistant_tasks_post_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Execute an owner-scoped read-only trading assistant task",
+        "tags" : [ "TradingAssistantAPI" ],
+        "x-codegen-request-body-name" : "body"
+      }
+    },
+    "/api/v1/trading/decisions/{id}" : {
+      "get" : {
+        "parameters" : [ {
+          "description" : "Decision ID",
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_decisions__id__get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Get one owner-scoped trading decision with auditable input and output",
+        "tags" : [ "TradingObservationAPI" ]
+      }
+    },
+    "/api/v1/trading/exchanges" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_exchanges_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query masked exchange configurations",
+        "tags" : [ "TradingCatalogAPI" ]
+      }
+    },
+    "/api/v1/trading/models" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_models_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query masked AI model configurations",
+        "tags" : [ "TradingCatalogAPI" ]
+      }
+    },
+    "/api/v1/trading/strategies" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_strategies_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query strategy summaries",
+        "tags" : [ "TradingCatalogAPI" ]
+      }
+    },
+    "/api/v1/trading/traders" : {
+      "get" : {
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/_api_v1_trading_traders_get_200_response"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "summary" : "Query trader configurations and runtime snapshots",
+        "tags" : [ "TradingCatalogAPI" ]
+      }
+    },
     "/api/v1/users" : {
       "get" : {
         "parameters" : [ {
@@ -1419,6 +1713,17 @@
             "type" : "string"
           }
         } ],
+        "requestBody" : {
+          "content" : {
+            "*/*" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/schema.ResetUserPasswordForm"
+              }
+            }
+          },
+          "description" : "new password",
+          "required" : true
+        },
         "responses" : {
           "200" : {
             "content" : {
@@ -1455,13 +1760,14 @@
           "ApiKeyAuth" : [ ]
         } ],
         "summary" : "Reset user password by ID",
-        "tags" : [ "UserAPI" ]
+        "tags" : [ "UserAPI" ],
+        "x-codegen-request-body-name" : "body"
       }
     }
   },
   "components" : {
     "schemas" : {
-      "errors.Error" : {
+      "github_com_LyricTian_gin-admin_v10_pkg_errors.Error" : {
         "properties" : {
           "code" : {
             "type" : "integer"
@@ -1478,11 +1784,346 @@
         },
         "type" : "object"
       },
+      "schema.AIInvocationMetric" : {
+        "properties" : {
+          "average_latency_ms" : {
+            "type" : "number"
+          },
+          "calls" : {
+            "type" : "integer"
+          },
+          "estimated_cost_usd" : {
+            "type" : "string"
+          },
+          "failures" : {
+            "type" : "integer"
+          },
+          "input_tokens" : {
+            "type" : "integer"
+          },
+          "key" : {
+            "type" : "string"
+          },
+          "output_tokens" : {
+            "type" : "integer"
+          },
+          "success_rate" : {
+            "type" : "number"
+          },
+          "successes" : {
+            "type" : "integer"
+          },
+          "total_tokens" : {
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.AIInvocationSummary" : {
+        "properties" : {
+          "by_model" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.AIInvocationMetric"
+            },
+            "type" : "array"
+          },
+          "by_strategy" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.AIInvocationMetric"
+            },
+            "type" : "array"
+          },
+          "by_trader" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.AIInvocationMetric"
+            },
+            "type" : "array"
+          },
+          "end_at" : {
+            "type" : "string"
+          },
+          "overall" : {
+            "$ref" : "#/components/schemas/schema.AIInvocationMetric"
+          },
+          "start_at" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.AIModelView" : {
+        "properties" : {
+          "created_at" : {
+            "type" : "string"
+          },
+          "custom_api_url" : {
+            "type" : "string"
+          },
+          "custom_model_name" : {
+            "type" : "string"
+          },
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "has_api_key" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "input_price_per_m_tokens" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "output_price_per_m_tokens" : {
+            "type" : "string"
+          },
+          "owner_user_id" : {
+            "type" : "string"
+          },
+          "provider" : {
+            "type" : "string"
+          },
+          "updated_at" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.AssistantTaskForm" : {
+        "properties" : {
+          "message" : {
+            "maxLength" : 200,
+            "type" : "string"
+          }
+        },
+        "required" : [ "message" ],
+        "type" : "object"
+      },
+      "schema.AssistantTaskView" : {
+        "properties" : {
+          "skill" : {
+            "type" : "string"
+          },
+          "text" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "schema.Captcha" : {
         "properties" : {
           "captcha_id" : {
             "description" : "Captcha ID",
             "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.DecisionDetailView" : {
+        "properties" : {
+          "actions" : {
+            "items" : {
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "ai_request_duration_ms" : {
+            "type" : "integer"
+          },
+          "candidate_coins" : {
+            "items" : {
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "created_at" : {
+            "type" : "string"
+          },
+          "cycle_number" : {
+            "type" : "integer"
+          },
+          "decided_at" : {
+            "type" : "string"
+          },
+          "decision" : {
+            "items" : {
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "error_message" : {
+            "type" : "string"
+          },
+          "exchange_id" : {
+            "type" : "string"
+          },
+          "execution_log" : {
+            "items" : {
+              "type" : "integer"
+            },
+            "type" : "array"
+          },
+          "id" : {
+            "type" : "integer"
+          },
+          "input_prompt" : {
+            "type" : "string"
+          },
+          "owner_user_id" : {
+            "type" : "string"
+          },
+          "raw_response" : {
+            "type" : "string"
+          },
+          "success" : {
+            "type" : "boolean"
+          },
+          "trader_id" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.ExchangeView" : {
+        "properties" : {
+          "account_name" : {
+            "type" : "string"
+          },
+          "account_type" : {
+            "type" : "string"
+          },
+          "account_user" : {
+            "type" : "string"
+          },
+          "api_key_index" : {
+            "type" : "integer"
+          },
+          "builder_approved" : {
+            "type" : "boolean"
+          },
+          "created_at" : {
+            "type" : "string"
+          },
+          "enabled" : {
+            "type" : "boolean"
+          },
+          "exchange_type" : {
+            "type" : "string"
+          },
+          "has_api_key" : {
+            "type" : "boolean"
+          },
+          "has_api_key_private_key" : {
+            "type" : "boolean"
+          },
+          "has_passphrase" : {
+            "type" : "boolean"
+          },
+          "has_private_key" : {
+            "type" : "boolean"
+          },
+          "has_secret_key" : {
+            "type" : "boolean"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "owner_user_id" : {
+            "type" : "string"
+          },
+          "signer_address" : {
+            "type" : "string"
+          },
+          "testnet" : {
+            "type" : "boolean"
+          },
+          "unified_account" : {
+            "type" : "boolean"
+          },
+          "updated_at" : {
+            "type" : "string"
+          },
+          "wallet_address" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.LiquidationHeatmap" : {
+        "properties" : {
+          "cells" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.LiquidationHeatmapCell"
+            },
+            "type" : "array"
+          },
+          "coverage_notice" : {
+            "type" : "string"
+          },
+          "data_available" : {
+            "type" : "boolean"
+          },
+          "event_count" : {
+            "type" : "integer"
+          },
+          "exchange" : {
+            "type" : "string"
+          },
+          "from" : {
+            "type" : "string"
+          },
+          "market" : {
+            "type" : "string"
+          },
+          "max_price" : {
+            "type" : "number"
+          },
+          "min_price" : {
+            "type" : "number"
+          },
+          "price_buckets" : {
+            "type" : "integer"
+          },
+          "source" : {
+            "type" : "string"
+          },
+          "symbol" : {
+            "type" : "string"
+          },
+          "time_buckets" : {
+            "type" : "integer"
+          },
+          "to" : {
+            "type" : "string"
+          },
+          "total_notional_usdt" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.LiquidationHeatmapCell" : {
+        "properties" : {
+          "event_count" : {
+            "type" : "integer"
+          },
+          "long_notional_usdt" : {
+            "type" : "number"
+          },
+          "price_index" : {
+            "type" : "integer"
+          },
+          "short_notional_usdt" : {
+            "type" : "number"
+          },
+          "time_index" : {
+            "type" : "integer"
           }
         },
         "type" : "object"
@@ -1547,7 +2188,8 @@
             "type" : "string"
           },
           "password" : {
-            "description" : "Login password (md5 hash)",
+            "description" : "Login password",
+            "maxLength" : 72,
             "type" : "string"
           },
           "username" : {
@@ -1571,6 +2213,252 @@
           "token_type" : {
             "description" : "Token type (Usage: Authorization=${token_type} ${access_token})",
             "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketContext" : {
+        "properties" : {
+          "derivatives" : {
+            "$ref" : "#/components/schemas/schema.MarketDerivatives"
+          },
+          "exchange" : {
+            "type" : "string"
+          },
+          "generated_at" : {
+            "type" : "integer"
+          },
+          "market" : {
+            "type" : "string"
+          },
+          "order_book" : {
+            "$ref" : "#/components/schemas/schema.MarketOrderBook"
+          },
+          "risk_radar" : {
+            "$ref" : "#/components/schemas/schema.MarketRiskRadar"
+          },
+          "symbol" : {
+            "type" : "string"
+          },
+          "ticker" : {
+            "$ref" : "#/components/schemas/schema.MarketTicker"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketDataSourceCapability" : {
+        "properties" : {
+          "authorization" : {
+            "type" : "string"
+          },
+          "cost" : {
+            "type" : "string"
+          },
+          "features" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "limitations" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketDepthLevel" : {
+        "properties" : {
+          "price" : {
+            "type" : "string"
+          },
+          "quantity" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketDerivatives" : {
+        "properties" : {
+          "flow_is_proxy" : {
+            "type" : "boolean"
+          },
+          "flow_source" : {
+            "type" : "string"
+          },
+          "funding_rate" : {
+            "type" : "string"
+          },
+          "mark_price" : {
+            "type" : "string"
+          },
+          "next_funding_time" : {
+            "type" : "integer"
+          },
+          "open_interest" : {
+            "type" : "string"
+          },
+          "open_interest_value_usdt" : {
+            "type" : "string"
+          },
+          "taker_buy_sell_ratio" : {
+            "type" : "number"
+          },
+          "taker_buy_volume" : {
+            "type" : "string"
+          },
+          "taker_sell_volume" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketInstrument" : {
+        "properties" : {
+          "base_asset" : {
+            "type" : "string"
+          },
+          "display" : {
+            "type" : "string"
+          },
+          "exchange" : {
+            "type" : "string"
+          },
+          "market" : {
+            "type" : "string"
+          },
+          "quote_asset" : {
+            "type" : "string"
+          },
+          "symbol" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketKline" : {
+        "properties" : {
+          "close" : {
+            "type" : "string"
+          },
+          "closed" : {
+            "type" : "boolean"
+          },
+          "high" : {
+            "type" : "string"
+          },
+          "low" : {
+            "type" : "string"
+          },
+          "open" : {
+            "type" : "string"
+          },
+          "quote_volume" : {
+            "type" : "string"
+          },
+          "time" : {
+            "type" : "integer"
+          },
+          "volume" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketOrderBook" : {
+        "properties" : {
+          "asks" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.MarketDepthLevel"
+            },
+            "type" : "array"
+          },
+          "bids" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.MarketDepthLevel"
+            },
+            "type" : "array"
+          },
+          "imbalance" : {
+            "type" : "number"
+          },
+          "spread_bps" : {
+            "type" : "number"
+          },
+          "timestamp" : {
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketRiskRadar" : {
+        "properties" : {
+          "book_imbalance" : {
+            "type" : "number"
+          },
+          "crowding_risk" : {
+            "type" : "string"
+          },
+          "funding_rate_pct" : {
+            "type" : "number"
+          },
+          "liquidity_risk" : {
+            "type" : "string"
+          },
+          "risk_score" : {
+            "type" : "integer"
+          },
+          "spread_bps" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.MarketTicker" : {
+        "properties" : {
+          "base_volume" : {
+            "type" : "string"
+          },
+          "exchange" : {
+            "type" : "string"
+          },
+          "high_price" : {
+            "type" : "string"
+          },
+          "last_price" : {
+            "type" : "string"
+          },
+          "low_price" : {
+            "type" : "string"
+          },
+          "market" : {
+            "type" : "string"
+          },
+          "open_price" : {
+            "type" : "string"
+          },
+          "price_change" : {
+            "type" : "string"
+          },
+          "price_change_rate" : {
+            "type" : "string"
+          },
+          "quote_volume" : {
+            "type" : "string"
+          },
+          "symbol" : {
+            "type" : "string"
+          },
+          "timestamp" : {
+            "type" : "integer"
           }
         },
         "type" : "object"
@@ -1728,6 +2616,81 @@
         },
         "type" : "object"
       },
+      "schema.ProviderCapability" : {
+        "properties" : {
+          "account_types" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "credential_model" : {
+            "type" : "string"
+          },
+          "exchange" : {
+            "type" : "string"
+          },
+          "history" : {
+            "type" : "boolean"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "migration_status" : {
+            "type" : "string"
+          },
+          "notes" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "public_market_data" : {
+            "type" : "boolean"
+          },
+          "snapshot" : {
+            "type" : "boolean"
+          },
+          "trading" : {
+            "type" : "boolean"
+          },
+          "trading_gate" : {
+            "type" : "string"
+          },
+          "user_stream" : {
+            "type" : "boolean"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.ProviderCapabilityMatrix" : {
+        "properties" : {
+          "data_sources" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.MarketDataSourceCapability"
+            },
+            "type" : "array"
+          },
+          "providers" : {
+            "items" : {
+              "$ref" : "#/components/schemas/schema.ProviderCapability"
+            },
+            "type" : "array"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.ResetUserPasswordForm" : {
+        "properties" : {
+          "password" : {
+            "maxLength" : 72,
+            "minLength" : 12,
+            "type" : "string"
+          }
+        },
+        "required" : [ "password" ],
+        "type" : "object"
+      },
       "schema.Role" : {
         "properties" : {
           "code" : {
@@ -1833,6 +2796,163 @@
         },
         "type" : "object"
       },
+      "schema.StrategyView" : {
+        "properties" : {
+          "config_visible" : {
+            "type" : "boolean"
+          },
+          "created_at" : {
+            "type" : "string"
+          },
+          "current_version" : {
+            "type" : "integer"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "is_active" : {
+            "type" : "boolean"
+          },
+          "is_default" : {
+            "type" : "boolean"
+          },
+          "is_public" : {
+            "type" : "boolean"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "owner_user_id" : {
+            "type" : "string"
+          },
+          "published_version" : {
+            "type" : "integer"
+          },
+          "strategy_type" : {
+            "type" : "string"
+          },
+          "updated_at" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
+      "schema.TraderView" : {
+        "properties" : {
+          "ai_consent_at" : {
+            "type" : "string"
+          },
+          "ai_consent_model_id" : {
+            "type" : "string"
+          },
+          "ai_model_id" : {
+            "type" : "string"
+          },
+          "auto_apply_strategy_updates" : {
+            "type" : "boolean"
+          },
+          "competition_alias" : {
+            "type" : "string"
+          },
+          "competition_joined_at" : {
+            "type" : "string"
+          },
+          "competition_public_id" : {
+            "type" : "string"
+          },
+          "consecutive_failures" : {
+            "type" : "integer"
+          },
+          "created_at" : {
+            "type" : "string"
+          },
+          "cycle_number" : {
+            "type" : "integer"
+          },
+          "desired_state" : {
+            "type" : "string"
+          },
+          "exchange_id" : {
+            "type" : "string"
+          },
+          "execution_mode" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string"
+          },
+          "initial_balance" : {
+            "type" : "string"
+          },
+          "is_cross_margin" : {
+            "type" : "boolean"
+          },
+          "is_simulation" : {
+            "type" : "boolean"
+          },
+          "last_cycle_duration_ms" : {
+            "type" : "integer"
+          },
+          "last_decision_at" : {
+            "type" : "string"
+          },
+          "last_error_code" : {
+            "type" : "string"
+          },
+          "last_error_message" : {
+            "type" : "string"
+          },
+          "last_heartbeat_at" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "notification_channel_ids" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          },
+          "owner_user_id" : {
+            "type" : "string"
+          },
+          "pause_reason" : {
+            "type" : "string"
+          },
+          "runtime_state" : {
+            "type" : "string"
+          },
+          "safe_mode" : {
+            "type" : "boolean"
+          },
+          "scan_interval_minutes" : {
+            "type" : "integer"
+          },
+          "show_in_competition" : {
+            "type" : "boolean"
+          },
+          "strategy_id" : {
+            "type" : "string"
+          },
+          "strategy_state" : {
+            "type" : "string"
+          },
+          "strategy_version" : {
+            "type" : "integer"
+          },
+          "sync_state" : {
+            "type" : "string"
+          },
+          "updated_at" : {
+            "type" : "string"
+          }
+        },
+        "type" : "object"
+      },
       "schema.UpdateCurrentUser" : {
         "properties" : {
           "email" : {
@@ -1862,11 +2982,14 @@
       "schema.UpdateLoginPassword" : {
         "properties" : {
           "new_password" : {
-            "description" : "New password (md5 hash)",
+            "description" : "New password",
+            "maxLength" : 72,
+            "minLength" : 12,
             "type" : "string"
           },
           "old_password" : {
-            "description" : "Old password (md5 hash)",
+            "description" : "Old password",
+            "maxLength" : 72,
             "type" : "string"
           }
         },
@@ -1934,8 +3057,9 @@
             "type" : "string"
           },
           "password" : {
-            "description" : "Password for login (md5 hash)",
-            "maxLength" : 64,
+            "description" : "Password for login",
+            "maxLength" : 72,
+            "minLength" : 12,
             "type" : "string"
           },
           "phone" : {
@@ -2004,7 +3128,7 @@
             "type" : "object"
           },
           "error" : {
-            "$ref" : "#/components/schemas/errors.Error"
+            "$ref" : "#/components/schemas/github_com_LyricTian_gin-admin_v10_pkg_errors.Error"
           },
           "success" : {
             "type" : "boolean"
@@ -2081,6 +3205,84 @@
           "type" : "object"
         } ]
       },
+      "_api_v1_market_context_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.MarketContext"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_market_instruments_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "items" : {
+                "$ref" : "#/components/schemas/schema.MarketInstrument"
+              },
+              "type" : "array"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_market_klines_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "items" : {
+                "$ref" : "#/components/schemas/schema.MarketKline"
+              },
+              "type" : "array"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_market_liquidations_heatmap_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.LiquidationHeatmap"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_market_provider_capabilities_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.ProviderCapabilityMatrix"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_market_ticker_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.MarketTicker"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
       "_api_v1_menus_post_200_response" : {
         "allOf" : [ {
           "$ref" : "#/components/schemas/util.ResponseResult"
@@ -2115,6 +3317,102 @@
           "properties" : {
             "data" : {
               "$ref" : "#/components/schemas/schema.Role"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_ai_invocations_summary_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.AIInvocationSummary"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_assistant_tasks_post_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.AssistantTaskView"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_decisions__id__get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "$ref" : "#/components/schemas/schema.DecisionDetailView"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_exchanges_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "items" : {
+                "$ref" : "#/components/schemas/schema.ExchangeView"
+              },
+              "type" : "array"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_models_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "items" : {
+                "$ref" : "#/components/schemas/schema.AIModelView"
+              },
+              "type" : "array"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_strategies_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "items" : {
+                "$ref" : "#/components/schemas/schema.StrategyView"
+              },
+              "type" : "array"
+            }
+          },
+          "type" : "object"
+        } ]
+      },
+      "_api_v1_trading_traders_get_200_response" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/util.ResponseResult"
+        }, {
+          "properties" : {
+            "data" : {
+              "items" : {
+                "$ref" : "#/components/schemas/schema.TraderView"
+              },
+              "type" : "array"
             }
           },
           "type" : "object"

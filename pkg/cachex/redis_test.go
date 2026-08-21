@@ -3,12 +3,20 @@ package cachex
 import (
 	"context"
 	"fmt"
+	"net"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRedisCache(t *testing.T) {
+	conn, err := net.DialTimeout("tcp", "localhost:6379", 200*time.Millisecond)
+	if err != nil {
+		t.Skip("Redis is not available at localhost:6379")
+	}
+	_ = conn.Close()
+
 	assert := assert.New(t)
 
 	cache := NewRedisCache(RedisConfig{
@@ -17,7 +25,7 @@ func TestRedisCache(t *testing.T) {
 	})
 
 	ctx := context.Background()
-	err := cache.Set(ctx, "tt", "foo", "bar")
+	err = cache.Set(ctx, "tt", "foo", "bar")
 	assert.Nil(err)
 
 	val, exists, err := cache.Get(ctx, "tt", "foo")

@@ -1,0 +1,55 @@
+groups:
+  - name: xtrading-provider
+    rules:
+      - alert: XTradingProviderCircuitOpen
+        expr: gauge_state{module="trading_provider",state=~".+_circuit_open"} == 1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "XTrading exchange provider circuit is open"
+          description: "Provider circuit {{ $labels.state }} has remained open for more than one minute."
+      - alert: XTradingProviderErrorRateHigh
+        expr: sum by (exception) (rate(counter_exception{module="trading_provider"}[5m])) > 0.2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "XTrading exchange provider error rate is high"
+          description: "Provider error {{ $labels.exception }} exceeds 0.2 errors/second for five minutes."
+  - name: xtrading-runtime
+    rules:
+      - alert: XTradingRuntimeCycleFailures
+        expr: sum(rate(counter_requests{module="trading_runtime",api="strategy_cycle",code="error"}[10m])) > 0
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "XTrading strategy runtime is failing"
+          description: "At least one strategy cycle has failed continuously during the last ten minutes."
+      - alert: XTradingRuntimeCycleSlow
+        expr: summary_latency{module="trading_runtime",api="strategy_cycle",quantile="0.95"} > 60
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "XTrading strategy runtime latency is high"
+          description: "The p95 strategy cycle duration has exceeded 60 seconds for ten minutes."
+  - name: xtrading-ai
+    rules:
+      - alert: XTradingAIErrorRateHigh
+        expr: sum(rate(counter_requests{module="trading_ai",code="error"}[10m])) / clamp_min(sum(rate(counter_requests{module="trading_ai"}[10m])), 0.000001) > 0.2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "XTrading AI provider error rate is high"
+          description: "More than 20 percent of AI calls have failed for ten minutes."
+      - alert: XTradingAILatencyHigh
+        expr: summary_latency{module="trading_ai",quantile="0.95"} > 45
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "XTrading AI provider latency is high"
+          description: "The p95 AI provider latency has exceeded 45 seconds for ten minutes."

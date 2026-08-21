@@ -1,5 +1,5 @@
 definitions:
-  errors.Error:
+  github_com_LyricTian_gin-admin_v10_pkg_errors.Error:
     properties:
       code:
         type: integer
@@ -10,11 +10,233 @@ definitions:
       status:
         type: string
     type: object
+  schema.AIInvocationMetric:
+    properties:
+      average_latency_ms:
+        type: number
+      calls:
+        type: integer
+      estimated_cost_usd:
+        type: string
+      failures:
+        type: integer
+      input_tokens:
+        type: integer
+      key:
+        type: string
+      output_tokens:
+        type: integer
+      success_rate:
+        type: number
+      successes:
+        type: integer
+      total_tokens:
+        type: integer
+    type: object
+  schema.AIInvocationSummary:
+    properties:
+      by_model:
+        items:
+          $ref: '#/definitions/schema.AIInvocationMetric'
+        type: array
+      by_strategy:
+        items:
+          $ref: '#/definitions/schema.AIInvocationMetric'
+        type: array
+      by_trader:
+        items:
+          $ref: '#/definitions/schema.AIInvocationMetric'
+        type: array
+      end_at:
+        type: string
+      overall:
+        $ref: '#/definitions/schema.AIInvocationMetric'
+      start_at:
+        type: string
+    type: object
+  schema.AIModelView:
+    properties:
+      created_at:
+        type: string
+      custom_api_url:
+        type: string
+      custom_model_name:
+        type: string
+      enabled:
+        type: boolean
+      has_api_key:
+        type: boolean
+      id:
+        type: string
+      input_price_per_m_tokens:
+        type: string
+      name:
+        type: string
+      output_price_per_m_tokens:
+        type: string
+      owner_user_id:
+        type: string
+      provider:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  schema.AssistantTaskForm:
+    properties:
+      message:
+        maxLength: 200
+        type: string
+    required:
+    - message
+    type: object
+  schema.AssistantTaskView:
+    properties:
+      skill:
+        type: string
+      text:
+        type: string
+    type: object
   schema.Captcha:
     properties:
       captcha_id:
         description: Captcha ID
         type: string
+    type: object
+  schema.DecisionDetailView:
+    properties:
+      actions:
+        items:
+          type: integer
+        type: array
+      ai_request_duration_ms:
+        type: integer
+      candidate_coins:
+        items:
+          type: integer
+        type: array
+      created_at:
+        type: string
+      cycle_number:
+        type: integer
+      decided_at:
+        type: string
+      decision:
+        items:
+          type: integer
+        type: array
+      error_message:
+        type: string
+      exchange_id:
+        type: string
+      execution_log:
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+      input_prompt:
+        type: string
+      owner_user_id:
+        type: string
+      raw_response:
+        type: string
+      success:
+        type: boolean
+      trader_id:
+        type: string
+    type: object
+  schema.ExchangeView:
+    properties:
+      account_name:
+        type: string
+      account_type:
+        type: string
+      account_user:
+        type: string
+      api_key_index:
+        type: integer
+      builder_approved:
+        type: boolean
+      created_at:
+        type: string
+      enabled:
+        type: boolean
+      exchange_type:
+        type: string
+      has_api_key:
+        type: boolean
+      has_api_key_private_key:
+        type: boolean
+      has_passphrase:
+        type: boolean
+      has_private_key:
+        type: boolean
+      has_secret_key:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+      owner_user_id:
+        type: string
+      signer_address:
+        type: string
+      testnet:
+        type: boolean
+      unified_account:
+        type: boolean
+      updated_at:
+        type: string
+      wallet_address:
+        type: string
+    type: object
+  schema.LiquidationHeatmap:
+    properties:
+      cells:
+        items:
+          $ref: '#/definitions/schema.LiquidationHeatmapCell'
+        type: array
+      coverage_notice:
+        type: string
+      data_available:
+        type: boolean
+      event_count:
+        type: integer
+      exchange:
+        type: string
+      from:
+        type: string
+      market:
+        type: string
+      max_price:
+        type: number
+      min_price:
+        type: number
+      price_buckets:
+        type: integer
+      source:
+        type: string
+      symbol:
+        type: string
+      time_buckets:
+        type: integer
+      to:
+        type: string
+      total_notional_usdt:
+        type: number
+    type: object
+  schema.LiquidationHeatmapCell:
+    properties:
+      event_count:
+        type: integer
+      long_notional_usdt:
+        type: number
+      price_index:
+        type: integer
+      short_notional_usdt:
+        type: number
+      time_index:
+        type: integer
     type: object
   schema.Logger:
     properties:
@@ -61,7 +283,8 @@ definitions:
         description: Captcha verify id
         type: string
       password:
-        description: Login password (md5 hash)
+        description: Login password
+        maxLength: 72
         type: string
       username:
         description: Login name
@@ -83,6 +306,167 @@ definitions:
       token_type:
         description: 'Token type (Usage: Authorization=${token_type} ${access_token})'
         type: string
+    type: object
+  schema.MarketContext:
+    properties:
+      derivatives:
+        $ref: '#/definitions/schema.MarketDerivatives'
+      exchange:
+        type: string
+      generated_at:
+        type: integer
+      market:
+        type: string
+      order_book:
+        $ref: '#/definitions/schema.MarketOrderBook'
+      risk_radar:
+        $ref: '#/definitions/schema.MarketRiskRadar'
+      symbol:
+        type: string
+      ticker:
+        $ref: '#/definitions/schema.MarketTicker'
+    type: object
+  schema.MarketDataSourceCapability:
+    properties:
+      authorization:
+        type: string
+      cost:
+        type: string
+      features:
+        items:
+          type: string
+        type: array
+      limitations:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      status:
+        type: string
+    type: object
+  schema.MarketDepthLevel:
+    properties:
+      price:
+        type: string
+      quantity:
+        type: string
+    type: object
+  schema.MarketDerivatives:
+    properties:
+      flow_is_proxy:
+        type: boolean
+      flow_source:
+        type: string
+      funding_rate:
+        type: string
+      mark_price:
+        type: string
+      next_funding_time:
+        type: integer
+      open_interest:
+        type: string
+      open_interest_value_usdt:
+        type: string
+      taker_buy_sell_ratio:
+        type: number
+      taker_buy_volume:
+        type: string
+      taker_sell_volume:
+        type: string
+    type: object
+  schema.MarketInstrument:
+    properties:
+      base_asset:
+        type: string
+      display:
+        type: string
+      exchange:
+        type: string
+      market:
+        type: string
+      quote_asset:
+        type: string
+      symbol:
+        type: string
+    type: object
+  schema.MarketKline:
+    properties:
+      close:
+        type: string
+      closed:
+        type: boolean
+      high:
+        type: string
+      low:
+        type: string
+      open:
+        type: string
+      quote_volume:
+        type: string
+      time:
+        type: integer
+      volume:
+        type: string
+    type: object
+  schema.MarketOrderBook:
+    properties:
+      asks:
+        items:
+          $ref: '#/definitions/schema.MarketDepthLevel'
+        type: array
+      bids:
+        items:
+          $ref: '#/definitions/schema.MarketDepthLevel'
+        type: array
+      imbalance:
+        type: number
+      spread_bps:
+        type: number
+      timestamp:
+        type: integer
+    type: object
+  schema.MarketRiskRadar:
+    properties:
+      book_imbalance:
+        type: number
+      crowding_risk:
+        type: string
+      funding_rate_pct:
+        type: number
+      liquidity_risk:
+        type: string
+      risk_score:
+        type: integer
+      spread_bps:
+        type: number
+    type: object
+  schema.MarketTicker:
+    properties:
+      base_volume:
+        type: string
+      exchange:
+        type: string
+      high_price:
+        type: string
+      last_price:
+        type: string
+      low_price:
+        type: string
+      market:
+        type: string
+      open_price:
+        type: string
+      price_change:
+        type: string
+      price_change_rate:
+        type: string
+      quote_volume:
+        type: string
+      symbol:
+        type: string
+      timestamp:
+        type: integer
     type: object
   schema.Menu:
     properties:
@@ -205,6 +589,57 @@ definitions:
         description: Update time
         type: string
     type: object
+  schema.ProviderCapability:
+    properties:
+      account_types:
+        items:
+          type: string
+        type: array
+      credential_model:
+        type: string
+      exchange:
+        type: string
+      history:
+        type: boolean
+      kind:
+        type: string
+      migration_status:
+        type: string
+      notes:
+        items:
+          type: string
+        type: array
+      public_market_data:
+        type: boolean
+      snapshot:
+        type: boolean
+      trading:
+        type: boolean
+      trading_gate:
+        type: string
+      user_stream:
+        type: boolean
+    type: object
+  schema.ProviderCapabilityMatrix:
+    properties:
+      data_sources:
+        items:
+          $ref: '#/definitions/schema.MarketDataSourceCapability'
+        type: array
+      providers:
+        items:
+          $ref: '#/definitions/schema.ProviderCapability'
+        type: array
+    type: object
+  schema.ResetUserPasswordForm:
+    properties:
+      password:
+        maxLength: 72
+        minLength: 12
+        type: string
+    required:
+    - password
+    type: object
   schema.Role:
     properties:
       code:
@@ -287,6 +722,516 @@ definitions:
         description: Update time
         type: string
     type: object
+  schema.SpotAcceptanceItem:
+    properties:
+      actual:
+        type: string
+      expected:
+        type: string
+      key:
+        type: string
+      not_applicable:
+        type: boolean
+      passed:
+        type: boolean
+    type: object
+  schema.SpotBacktestBenchmark:
+    properties:
+      calmar:
+        type: number
+      final_equity:
+        type: number
+      max_drawdown:
+        type: number
+      name:
+        type: string
+      total_return:
+        type: number
+    type: object
+  schema.SpotBacktestCostScenario:
+    properties:
+      fee_rate_bps:
+        type: number
+      slippage_bps:
+        type: number
+    type: object
+  schema.SpotBacktestCreateForm:
+    properties:
+      benchmarks:
+        items:
+          type: string
+        type: array
+      config:
+        $ref: '#/definitions/schema.SpotCoreSatelliteConfig'
+      cost_scenario:
+        $ref: '#/definitions/schema.SpotBacktestCostScenario'
+      end_time:
+        type: string
+      exchange:
+        type: string
+      initial_capital:
+        type: string
+      interval:
+        type: string
+      start_time:
+        type: string
+      strategy_id:
+        type: string
+      symbol:
+        type: string
+    required:
+    - end_time
+    - exchange
+    - initial_capital
+    - interval
+    - start_time
+    - symbol
+    type: object
+  schema.SpotBacktestEvent:
+    properties:
+      from_state:
+        type: string
+      lot_id:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: number
+      reason:
+        type: string
+      time:
+        type: integer
+      to_state:
+        type: string
+      type:
+        type: string
+    type: object
+  schema.SpotBacktestLot:
+    properties:
+      acquired_qty:
+        type: number
+      bucket:
+        type: string
+      closed_at:
+        type: integer
+      id:
+        type: string
+      layer_no:
+        type: integer
+      open_price:
+        type: number
+      open_time:
+        type: integer
+      realized_pnl:
+        type: number
+      remaining_qty:
+        type: number
+      target_price:
+        type: number
+      total_cost:
+        type: number
+    type: object
+  schema.SpotBacktestMetrics:
+    properties:
+      annualized_return:
+        type: number
+      average_cash_ratio:
+        type: number
+      calmar:
+        type: number
+      core_remaining_quantity:
+        type: number
+      fees:
+        type: number
+      final_equity:
+        type: number
+      initial_capital:
+        type: number
+      losing_trades:
+        type: integer
+      max_drawdown:
+        type: number
+      maximum_daily_buy_ratio:
+        type: number
+      maximum_exposure_ratio:
+        type: number
+      minimum_cash_ratio:
+        type: number
+      profit_factor:
+        type: number
+      profit_factor_available:
+        type: boolean
+      realized_pnl:
+        type: number
+      satellite_remaining_quantity:
+        type: number
+      total_return:
+        type: number
+      trade_count:
+        type: integer
+      turnover:
+        type: number
+      winning_trades:
+        type: integer
+    type: object
+  schema.SpotBacktestPoint:
+    properties:
+      cash:
+        type: number
+      equity:
+        type: number
+      exposure:
+        type: number
+      state:
+        type: string
+      time:
+        type: integer
+    type: object
+  schema.SpotBacktestResultView:
+    properties:
+      acceptance:
+        items:
+          $ref: '#/definitions/schema.SpotAcceptanceItem'
+        type: array
+      benchmarks:
+        items:
+          $ref: '#/definitions/schema.SpotBacktestBenchmark'
+        type: array
+      equity_curve:
+        items:
+          $ref: '#/definitions/schema.SpotBacktestPoint'
+        type: array
+      events:
+        items:
+          $ref: '#/definitions/schema.SpotBacktestEvent'
+        type: array
+      lots:
+        items:
+          $ref: '#/definitions/schema.SpotBacktestLot'
+        type: array
+      metrics:
+        $ref: '#/definitions/schema.SpotBacktestMetrics'
+      task:
+        $ref: '#/definitions/schema.SpotBacktestTask'
+    type: object
+  schema.SpotBacktestTask:
+    properties:
+      benchmarks:
+        type: string
+      cancel_requested:
+        type: boolean
+      code_version:
+        type: string
+      config:
+        type: string
+      cost_scenario:
+        type: string
+      created_at:
+        type: string
+      end_time:
+        type: string
+      error_code:
+        type: string
+      error_message:
+        type: string
+      exchange:
+        type: string
+      finished_at:
+        type: string
+      id:
+        type: string
+      initial_capital:
+        type: string
+      interval:
+        type: string
+      owner_user_id:
+        type: string
+      processed_market_at:
+        type: string
+      progress:
+        type: integer
+      start_time:
+        type: string
+      started_at:
+        type: string
+      status:
+        type: string
+      strategy_id:
+        type: string
+      symbol:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  schema.SpotCoreSatelliteConfig:
+    properties:
+      accumulation_cooldown_bars:
+        type: integer
+      accumulation_drawdowns:
+        items:
+          type: number
+        type: array
+      accumulation_weights:
+        items:
+          type: number
+        type: array
+      allow_live_execution:
+        type: boolean
+      breakout_confirm_bars:
+        type: integer
+      breakout_volume_multiplier:
+        type: number
+      core_budget_ratio:
+        type: number
+      core_minimum_retention_ratio:
+        type: number
+      distribution_lookback_bars:
+        type: integer
+      distribution_step_gain_pct:
+        type: number
+      distribution_step_sell_ratio:
+        type: number
+      enable_drawdown_risk_control:
+        type: boolean
+      exchange:
+        type: string
+      execution_timeframe:
+        type: string
+      fee_rate_bps:
+        type: number
+      low_area_drawdown_pct:
+        type: number
+      low_area_lookback_bars:
+        type: integer
+      market:
+        type: string
+      max_core_distribution_ratio:
+        type: number
+      max_daily_buy_ratio:
+        type: number
+      max_strategy_drawdown_pct:
+        type: number
+      max_symbol_exposure_ratio:
+        type: number
+      minimum_cash_ratio:
+        type: number
+      quote_asset:
+        type: string
+      resistance_lookback_bars:
+        type: integer
+      satellite_budget_ratio:
+        type: number
+      satellite_entry_drawdowns:
+        items:
+          type: number
+        type: array
+      satellite_sell_ratio:
+        type: number
+      satellite_take_profit_ratio:
+        type: number
+      slippage_bps:
+        type: number
+      stabilization_bars:
+        type: integer
+      strategy_budget_usdt:
+        type: number
+      stress_slippage_bps:
+        type: number
+      symbol:
+        type: string
+      trend_filter_period:
+        type: integer
+    type: object
+  schema.SpotPositionLot:
+    properties:
+      acquired_qty:
+        type: string
+      bucket:
+        type: string
+      closed_at:
+        type: string
+      config_version:
+        type: integer
+      created_at:
+        type: string
+      cycle_id:
+        type: string
+      exchange_id:
+        type: string
+      id:
+        type: string
+      layer_no:
+        type: integer
+      market:
+        type: string
+      opened_at:
+        type: string
+      owner_user_id:
+        type: string
+      remaining_qty:
+        type: string
+      reserved_qty:
+        type: string
+      source_buy_fill_id:
+        type: string
+      source_order_intent_id:
+        type: string
+      status:
+        type: string
+      strategy_id:
+        type: string
+      symbol:
+        type: string
+      target_net_profit_rate:
+        type: string
+      target_price:
+        type: string
+      total_cost:
+        type: string
+      trader_id:
+        type: string
+      unit_cost:
+        type: string
+      updated_at:
+        type: string
+      version:
+        type: integer
+    type: object
+  schema.SpotStateEvent:
+    properties:
+      config_version:
+        type: integer
+      correlation_id:
+        type: string
+      cycle_id:
+        type: string
+      event_type:
+        type: string
+      from_state:
+        type: string
+      id:
+        type: string
+      market_time:
+        type: string
+      owner_user_id:
+        type: string
+      processed_at:
+        type: string
+      reason_code:
+        type: string
+      risk_snapshot:
+        type: string
+      signal_snapshot:
+        type: string
+      strategy_id:
+        type: string
+      to_state:
+        type: string
+    type: object
+  schema.StrategyView:
+    properties:
+      config_visible:
+        type: boolean
+      created_at:
+        type: string
+      current_version:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
+      is_active:
+        type: boolean
+      is_default:
+        type: boolean
+      is_public:
+        type: boolean
+      name:
+        type: string
+      owner_user_id:
+        type: string
+      published_version:
+        type: integer
+      strategy_type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  schema.TraderView:
+    properties:
+      ai_consent_at:
+        type: string
+      ai_consent_model_id:
+        type: string
+      ai_model_id:
+        type: string
+      auto_apply_strategy_updates:
+        type: boolean
+      competition_alias:
+        type: string
+      competition_joined_at:
+        type: string
+      competition_public_id:
+        type: string
+      consecutive_failures:
+        type: integer
+      created_at:
+        type: string
+      cycle_number:
+        type: integer
+      desired_state:
+        type: string
+      exchange_id:
+        type: string
+      execution_mode:
+        type: string
+      id:
+        type: string
+      initial_balance:
+        type: string
+      is_cross_margin:
+        type: boolean
+      is_simulation:
+        type: boolean
+      last_cycle_duration_ms:
+        type: integer
+      last_decision_at:
+        type: string
+      last_error_code:
+        type: string
+      last_error_message:
+        type: string
+      last_heartbeat_at:
+        type: string
+      name:
+        type: string
+      notification_channel_ids:
+        items:
+          type: string
+        type: array
+      owner_user_id:
+        type: string
+      pause_reason:
+        type: string
+      runtime_state:
+        type: string
+      safe_mode:
+        type: boolean
+      scan_interval_minutes:
+        type: integer
+      show_in_competition:
+        type: boolean
+      strategy_id:
+        type: string
+      strategy_state:
+        type: string
+      strategy_version:
+        type: integer
+      sync_state:
+        type: string
+      updated_at:
+        type: string
+    type: object
   schema.UpdateCurrentUser:
     properties:
       email:
@@ -311,10 +1256,13 @@ definitions:
   schema.UpdateLoginPassword:
     properties:
       new_password:
-        description: New password (md5 hash)
+        description: New password
+        maxLength: 72
+        minLength: 12
         type: string
       old_password:
-        description: Old password (md5 hash)
+        description: Old password
+        maxLength: 72
         type: string
     required:
     - new_password
@@ -366,8 +1314,9 @@ definitions:
         maxLength: 64
         type: string
       password:
-        description: Password for login (md5 hash)
-        maxLength: 64
+        description: Password for login
+        maxLength: 72
+        minLength: 12
         type: string
       phone:
         description: Phone number of user
@@ -423,7 +1372,7 @@ definitions:
     properties:
       data: {}
       error:
-        $ref: '#/definitions/errors.Error'
+        $ref: '#/definitions/github_com_LyricTian_gin-admin_v10_pkg_errors.Error'
       success:
         type: boolean
       total:
@@ -431,9 +1380,9 @@ definitions:
     type: object
 info:
   contact: {}
-  description: A lightweight, flexible, elegant and full-featured RBAC scaffolding
-    based on GIN + GORM 2.0 + Casbin 2.0 + Wire DI.
-  title: ginadmin
+  description: XTrading management API for exchange accounts, AI models, strategies,
+    traders, runtime observations and RBAC operations.
+  title: XTrading API
   version: v10.1.0
 paths:
   /api/v1/captcha/id:
@@ -727,6 +1676,113 @@ paths:
       summary: Login system with username and password
       tags:
       - LoginAPI
+  /api/v1/market/context:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.MarketContext'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get public order book, derivatives metrics, taker-flow proxy and risk
+        radar
+      tags:
+      - MarketAPI
+  /api/v1/market/instruments:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.MarketInstrument'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query Binance or OKX instruments
+      tags:
+      - MarketAPI
+  /api/v1/market/klines:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.MarketKline'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query Binance or OKX candlesticks
+      tags:
+      - MarketAPI
+  /api/v1/market/liquidations/heatmap:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.LiquidationHeatmap'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query persisted Binance USD-M liquidation heatmap buckets
+      tags:
+      - MarketAPI
+  /api/v1/market/provider-capabilities:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.ProviderCapabilityMatrix'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get the explicit provider and public data-source capability matrix
+      tags:
+      - MarketAPI
+  /api/v1/market/ticker:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.MarketTicker'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get a Binance or OKX 24-hour ticker
+      tags:
+      - MarketAPI
   /api/v1/menus:
     get:
       parameters:
@@ -1067,6 +2123,296 @@ paths:
       summary: Update role record by ID
       tags:
       - RoleAPI
+  /api/v1/trading/ai-invocations/summary:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.AIInvocationSummary'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Aggregate owner-scoped AI invocation usage and reliability
+      tags:
+      - TradingObservationAPI
+  /api/v1/trading/assistant/tasks:
+    post:
+      parameters:
+      - description: Task request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.AssistantTaskForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.AssistantTaskView'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Execute an owner-scoped read-only trading assistant task
+      tags:
+      - TradingAssistantAPI
+  /api/v1/trading/backtests:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.SpotBacktestTask'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query spot strategy backtest tasks
+      tags:
+      - SpotStrategyAPI
+    post:
+      parameters:
+      - description: Backtest configuration
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.SpotBacktestCreateForm'
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.SpotBacktestTask'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create a deterministic spot core-satellite backtest
+      tags:
+      - SpotStrategyAPI
+  /api/v1/trading/backtests/{id}:
+    get:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.SpotBacktestTask'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get one spot strategy backtest task
+      tags:
+      - SpotStrategyAPI
+  /api/v1/trading/backtests/{id}/cancel:
+    post:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.ResponseResult'
+      security:
+      - ApiKeyAuth: []
+      summary: Cancel a running spot strategy backtest
+      tags:
+      - SpotStrategyAPI
+  /api/v1/trading/backtests/{id}/result:
+    get:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.SpotBacktestResultView'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get metrics, benchmarks, lots and events for a completed backtest
+      tags:
+      - SpotStrategyAPI
+  /api/v1/trading/decisions/{id}:
+    get:
+      parameters:
+      - description: Decision ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.DecisionDetailView'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get one owner-scoped trading decision with auditable input and output
+      tags:
+      - TradingObservationAPI
+  /api/v1/trading/exchanges:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.ExchangeView'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query masked exchange configurations
+      tags:
+      - TradingCatalogAPI
+  /api/v1/trading/models:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.AIModelView'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query masked AI model configurations
+      tags:
+      - TradingCatalogAPI
+  /api/v1/trading/spot-strategy/cycles/{cycleID}/events:
+    get:
+      parameters:
+      - description: Cycle ID
+        in: path
+        name: cycleID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.SpotStateEvent'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query immutable state events for a spot strategy cycle
+      tags:
+      - SpotStrategyAPI
+  /api/v1/trading/spot-strategy/lots:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.SpotPositionLot'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query explicitly attributed spot position lots
+      tags:
+      - SpotStrategyAPI
+  /api/v1/trading/strategies:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.StrategyView'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query strategy summaries
+      tags:
+      - TradingCatalogAPI
+  /api/v1/trading/traders:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/util.ResponseResult'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/schema.TraderView'
+                  type: array
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Query trader configurations and runtime snapshots
+      tags:
+      - TradingCatalogAPI
   /api/v1/users:
     get:
       parameters:
@@ -1253,6 +2599,12 @@ paths:
         name: id
         required: true
         type: string
+      - description: new password
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.ResetUserPasswordForm'
       responses:
         "200":
           description: OK

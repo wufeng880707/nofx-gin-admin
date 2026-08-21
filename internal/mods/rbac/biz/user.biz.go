@@ -94,7 +94,7 @@ func (a *User) Create(ctx context.Context, formItem *schema.UserForm) (*schema.U
 	}
 
 	if formItem.Password == "" {
-		formItem.Password = config.C.General.DefaultLoginPwd
+		return nil, errors.BadRequest("", "Password is required when creating a user")
 	}
 
 	if err := formItem.FillTo(user); err != nil {
@@ -191,7 +191,7 @@ func (a *User) Delete(ctx context.Context, id string) error {
 	})
 }
 
-func (a *User) ResetPassword(ctx context.Context, id string) error {
+func (a *User) ResetPassword(ctx context.Context, id string, password string) error {
 	exists, err := a.UserDAL.Exists(ctx, id)
 	if err != nil {
 		return err
@@ -199,7 +199,7 @@ func (a *User) ResetPassword(ctx context.Context, id string) error {
 		return errors.NotFound("", "User not found")
 	}
 
-	hashPass, err := hash.GeneratePassword(config.C.General.DefaultLoginPwd)
+	hashPass, err := hash.GeneratePassword(password)
 	if err != nil {
 		return errors.BadRequest("", "Failed to generate hash password: %s", err.Error())
 	}
