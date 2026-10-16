@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 COPY web/ ./
 RUN npm run build
 
-FROM golang:1.26.5-alpine3.24 AS go-builder
+FROM golang:1.27.2-alpine3.24 AS go-builder
 
 ARG VERSION=v10.1.0
 ARG RELEASE_TAG=${VERSION}
